@@ -1073,7 +1073,8 @@ void wt_status_append_cut_line(struct strbuf *buf)
 	const char *explanation = _("Do not modify or remove the line above.\nEverything below it will be ignored.");
 
 	strbuf_commented_addf(buf, "%s", cut_line);
-	strbuf_add_commented_lines(buf, explanation, strlen(explanation));
+	if (advice_enabled(ADVICE_COMMIT_MESSAGE))
+		strbuf_add_commented_lines(buf, explanation, strlen(explanation));
 }
 
 void wt_status_add_cut_line(FILE *fp)
