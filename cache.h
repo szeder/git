@@ -652,6 +652,7 @@ int init_db(const char *git_dir, const char *real_git_dir,
 void initialize_repository_version(int hash_algo, int reinit);
 
 void sanitize_stdfds(void);
+int can_daemonize(void);
 int daemonize(void);
 
 #define alloc_nr(x) (((x)+16)*3/2)
