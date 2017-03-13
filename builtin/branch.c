@@ -33,6 +33,7 @@ static const char * const builtin_branch_usage[] = {
 	N_("git branch [<options>] (-c | -C) [<old-branch>] <new-branch>"),
 	N_("git branch [<options>] [-r | -a] [--points-at]"),
 	N_("git branch [<options>] [-r | -a] [--format]"),
+	N_("git branch (--edit-description | --show-description) [<branchname>]"),
 	NULL
 };
 
@@ -618,7 +619,7 @@ int cmd_branch(int argc, const char **argv, const char *prefix)
 {
 	int delete = 0, rename = 0, copy = 0, force = 0, list = 0;
 	int show_current = 0;
-	int reflog = 0, edit_description = 0;
+	int reflog = 0, edit_description = 0, show_description = 0;
 	int quiet = 0, unset_upstream = 0;
 	const char *new_upstream = NULL;
 	enum branch_track track;
@@ -661,6 +662,8 @@ int cmd_branch(int argc, const char **argv, const char *prefix)
 		OPT_BOOL(0, "create-reflog", &reflog, N_("create the branch's reflog")),
 		OPT_BOOL(0, "edit-description", &edit_description,
 			 N_("edit the description for the branch")),
+		OPT_BOOL(0, "show-description", &show_description,
+			 N_("show the description for the branch")),
 		OPT__FORCE(&force, N_("force creation, move/rename, deletion"), PARSE_OPT_NOCOMPLETE),
 		OPT_MERGED(&filter, N_("print only branches that are merged")),
 		OPT_NO_MERGED(&filter, N_("print only branches that are not merged")),
@@ -697,8 +700,9 @@ int cmd_branch(int argc, const char **argv, const char *prefix)
 	argc = parse_options(argc, argv, prefix, options, builtin_branch_usage,
 			     0);
 
-	if (!delete && !rename && !copy && !edit_description && !new_upstream &&
-	    !show_current && !unset_upstream && argc == 0)
+	if (!delete && !rename && !copy &&
+	    !edit_description && !show_description &&
+	    !new_upstream && !show_current && !unset_upstream && argc == 0)
 		list = 1;
 
 	if (filter.with_commit || filter.no_commit ||
@@ -706,7 +710,7 @@ int cmd_branch(int argc, const char **argv, const char *prefix)
 		list = 1;
 
 	if (!!delete + !!rename + !!copy + !!new_upstream + !!show_current +
-	    list + edit_description + unset_upstream > 1)
+	    list + edit_description + show_description + unset_upstream > 1)
 		usage_with_options(builtin_branch_usage, options);
 
 	if (filter.abbrev == -1)
@@ -785,6 +789,35 @@ int cmd_branch(int argc, const char **argv, const char *prefix)
 
 		if (edit_branch_description(branch_name))
 			return 1;
+	} else if (show_description) {
+		const char *branch_name;
+		struct strbuf buf = STRBUF_INIT;
+		char *description = NULL;
+
+		if (!argc) {
+			if (filter.detached)
+				die(_("cannot show description on detached HEAD"));
+			branch_name = head;
+		} else if (argc == 1)
+			branch_name = argv[0];
+		else
+			die(_("cannot show description of more than one branch"));
+
+		strbuf_addf(&buf, "refs/heads/%s", branch_name);
+		if (!ref_exists(buf.buf)) {
+			strbuf_release(&buf);
+			return error(_("no branch named '%s'"), branch_name);
+		}
+		strbuf_reset(&buf);
+
+		strbuf_addf(&buf, "branch.%s.description", branch_name);
+		if (git_config_get_string(buf.buf, &description)) {
+			strbuf_release(&buf);
+			return error(_("no description for branch '%s'"), branch_name);
+		}
+		printf("%s", description);
+		strbuf_release(&buf);
+		free(description);
 	} else if (copy) {
 		if (!argc)
 			die(_("branch name required"));

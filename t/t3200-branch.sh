@@ -1301,6 +1301,35 @@ test_expect_success 'refuse --edit-description on unborn branch for now' '
 	test_must_fail env EDITOR=./editor git branch --edit-description
 '
 
+test_expect_success '--show-description' '
+	echo "New contents" >expect &&
+	git branch --show-description >actual &&
+	test_cmp expect actual
+'
+
+test_expect_success '--show-description on detached HEAD' '
+	git checkout --detach &&
+	test_when_finished git checkout main &&
+
+	echo "New contents" >expect &&
+	git branch --show-description main &&
+	test_cmp expect actual &&
+
+	test_must_fail git branch --show-description 2>err &&
+	test_i18ngrep "cannot show description on detached HEAD" err
+'
+
+test_expect_success '--show-description with no description' '
+	git config --unset branch.main.description &&
+	test_must_fail git branch --show-description main 2>err &&
+	test_i18ngrep "no description for branch" err
+'
+
+test_expect_success '--show-description on non-existing branch' '
+	test_must_fail git branch --show-description no-such-branch 2>err &&
+	test_i18ngrep "no branch named" err
+'
+
 test_expect_success '--merged catches invalid object names' '
 	test_must_fail git branch --merged 0000000000000000000000000000000000000000
 '
