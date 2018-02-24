@@ -7,7 +7,7 @@
 # Export the TEXTDOMAIN* data that we need for Git
 TEXTDOMAIN=git
 export TEXTDOMAIN
-if test -z "$GIT_TEXTDOMAINDIR"
+if test -z "${GIT_TEXTDOMAINDIR-}"
 then
 	TEXTDOMAINDIR="@@LOCALEDIR@@"
 else
@@ -20,7 +20,7 @@ GIT_INTERNAL_GETTEXT_SH_SCHEME=fallthrough
 if test -n "@@USE_GETTEXT_SCHEME@@"
 then
 	GIT_INTERNAL_GETTEXT_SH_SCHEME="@@USE_GETTEXT_SCHEME@@"
-elif test -n "$GIT_INTERNAL_GETTEXT_TEST_FALLBACKS"
+elif test -n "${GIT_INTERNAL_GETTEXT_TEST_FALLBACKS-}"
 then
 	: no probing necessary
 elif type gettext.sh >/dev/null 2>&1

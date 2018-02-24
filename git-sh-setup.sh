@@ -66,16 +66,16 @@ say () {
 	fi
 }
 
-if test -n "$OPTIONS_SPEC"; then
+if test -n "${OPTIONS_SPEC-}"; then
 	usage() {
 		"$0" -h
 		exit 1
 	}
 
 	parseopt_extra=
-	[ -n "$OPTIONS_KEEPDASHDASH" ] &&
+	[ -n "${OPTIONS_KEEPDASHDASH-}" ] &&
 		parseopt_extra="--keep-dashdash"
-	[ -n "$OPTIONS_STUCKLONG" ] &&
+	[ -n "${OPTIONS_STUCKLONG-}" ] &&
 		parseopt_extra="$parseopt_extra --stuck-long"
 
 	eval "$(
@@ -89,7 +89,7 @@ else
 		die "$(eval_gettext "usage: \$dashless \$USAGE")"
 	}
 
-	if [ -z "$LONG_USAGE" ]
+	if [ -z "${LONG_USAGE-}" ]
 	then
 		LONG_USAGE="$(eval_gettext "usage: \$dashless \$USAGE")"
 	else
@@ -98,7 +98,7 @@ else
 $LONG_USAGE")"
 	fi
 
-	case "$1" in
+	case "${1-}" in
 		-h)
 		echo "$LONG_USAGE"
 		case "$0" in *git-legacy-stash) exit 129;; esac
@@ -366,7 +366,7 @@ esac
 # if we require to be in a git repository.
 git_dir_init () {
 	GIT_DIR=$(git rev-parse --git-dir) || exit
-	if [ -z "$SUBDIRECTORY_OK" ]
+	if [ -z "${SUBDIRECTORY_OK-}" ]
 	then
 		test -z "$(git rev-parse --show-cdup)" || {
 			exit=$?
@@ -381,7 +381,7 @@ git_dir_init () {
 	: "${GIT_OBJECT_DIRECTORY="$(git rev-parse --git-path objects)"}"
 }
 
-if test -z "$NONGIT_OK"
+if test -z "${NONGIT_OK-}"
 then
 	git_dir_init
 fi
