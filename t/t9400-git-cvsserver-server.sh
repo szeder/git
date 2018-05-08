@@ -7,6 +7,7 @@ test_description='git-cvsserver access
 
 tests read access to a git repository with the
 cvs CLI client via git-cvsserver server'
+test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME

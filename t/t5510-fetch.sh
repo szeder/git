@@ -4,6 +4,7 @@
 test_description='Per branch config variables affects "git fetch".
 
 '
+test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME

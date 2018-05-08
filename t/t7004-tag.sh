@@ -6,6 +6,7 @@
 test_description='git tag
 
 Tests for operations with tags.'
+test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME

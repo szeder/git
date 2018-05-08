@@ -6,6 +6,7 @@
 test_description='git pack-object
 
 '
+test_preserve_cwd=YesForNow
 . ./test-lib.sh
 
 test_expect_success 'setup' '
