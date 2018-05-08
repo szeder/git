@@ -7,6 +7,7 @@ test_description='Summary support for submodules
 
 This test script tries to verify the sanity of summary subcommand of git submodule.
 '
+test_preserve_cwd=YesForNow
 
 # NOTE: This test script uses 'git add' instead of 'git submodule add' to add
 # submodules to the superproject. Some submodule subcommands such as init and

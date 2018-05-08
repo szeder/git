@@ -1,6 +1,7 @@
 #!/bin/sh
 
 test_description='git svn fetch deleted tag'
+test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME

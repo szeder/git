@@ -1,6 +1,8 @@
 #!/bin/sh
 
 test_description='git mv in subdirs'
+test_preserve_cwd=YesForNow
+
 . ./test-lib.sh
 . "$TEST_DIRECTORY"/lib-diff-data.sh
 

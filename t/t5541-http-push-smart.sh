@@ -6,6 +6,7 @@
 test_description='test smart pushing over http via http-backend'
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME
+test_preserve_cwd=YesForNow
 
 . ./test-lib.sh
 

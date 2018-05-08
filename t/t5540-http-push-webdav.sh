@@ -6,6 +6,7 @@
 test_description='test WebDAV http-push
 
 This test runs various sanity checks on http-push.'
+test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 test_description='commit graph'
+test_preserve_cwd=YesForNow
 . ./test-lib.sh
 
 GIT_TEST_COMMIT_GRAPH_CHANGED_PATHS=0

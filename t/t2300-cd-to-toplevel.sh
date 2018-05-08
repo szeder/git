@@ -1,6 +1,7 @@
 #!/bin/sh
 
 test_description='cd_to_toplevel'
+test_preserve_cwd=YesForNow
 
 TEST_PASSES_SANITIZE_LEAK=true
 . ./test-lib.sh
