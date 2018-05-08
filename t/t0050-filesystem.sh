@@ -1,7 +1,6 @@
 #!/bin/sh
 
 test_description='Various filesystem issues'
-test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME
@@ -126,11 +125,13 @@ test_expect_success "setup unicode normalization tests" '
 '
 
 $test_unicode 'rename (silent unicode normalization)' '
+	cd unicode &&
 	git mv "$aumlcdiar" "$auml" &&
 	git commit -m rename
 '
 
 $test_unicode 'merge (silent unicode normalization)' '
+	cd unicode &&
 	git reset --hard initial &&
 	git merge topic
 '
