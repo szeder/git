@@ -1,7 +1,6 @@
 #!/bin/sh
 
 test_description='subtree merge strategy'
-test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME
@@ -80,6 +79,7 @@ test_expect_success 'setup' '
 '
 
 test_expect_success 'initial merge' '
+	cd git &&
 	git remote add -f gui ../git-gui &&
 	git merge -s ours --no-commit --allow-unrelated-histories gui/main &&
 	git read-tree --prefix=git-gui/ -u gui/main &&
@@ -94,7 +94,7 @@ test_expect_success 'initial merge' '
 '
 
 test_expect_success 'merge update' '
-	cd ../git-gui &&
+	cd git-gui &&
 	echo git-gui2 > git-gui.sh &&
 	o3=$(git hash-object git-gui.sh) &&
 	git add git-gui.sh &&
@@ -111,7 +111,7 @@ test_expect_success 'merge update' '
 '
 
 test_expect_success 'initial ambiguous subtree' '
-	cd ../git &&
+	cd git &&
 	git reset --hard main &&
 	git checkout -b topic_2 &&
 	git merge -s ours --no-commit gui/main &&
@@ -128,7 +128,7 @@ test_expect_success 'initial ambiguous subtree' '
 '
 
 test_expect_success 'merge using explicit' '
-	cd ../git &&
+	cd git &&
 	git reset --hard topic_2 &&
 	git pull -Xsubtree=git-gui gui topic_2 &&
 	git ls-files -s >actual &&
@@ -141,7 +141,7 @@ test_expect_success 'merge using explicit' '
 '
 
 test_expect_success 'merge2 using explicit' '
-	cd ../git &&
+	cd git &&
 	git reset --hard topic_2 &&
 	git pull -Xsubtree=git-gui2 gui topic_2 &&
 	git ls-files -s >actual &&
