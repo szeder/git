@@ -86,7 +86,7 @@ commit_sha3=$(git rev-parse commit3^{commit})
 commit_sha4=$(git rev-parse commit4^{commit})
 commit_sha5=$(git rev-parse commit5^{commit})
 
-cat <<EOF | sort >expect_notes_x
+sort <<EOF >expect_notes_x
 $(test_oid hash05a) $commit_sha5
 $(test_oid hash04a) $commit_sha4
 $(test_oid hash03a) $commit_sha3
@@ -154,7 +154,7 @@ test_expect_success 'Fast-forward merge (y => x)' '
 	test "$(git rev-parse refs/notes/m)" = "$(git rev-parse refs/notes/y)"
 '
 
-cat <<EOF | sort >expect_notes_z
+sort <<EOF >expect_notes_z
 $(test_oid hash03b) $commit_sha3
 $(test_oid hash02b) $commit_sha2
 $(test_oid hash01a) $commit_sha1
@@ -377,7 +377,7 @@ test_expect_success 'fails to merge using "manual" strategy (z => w)' '
 
 test_expect_success 'notes tree still has fanout after merge (m)' 'verify_fanout m'
 
-cat <<EOF | sort >expect_conflicts
+sort <<EOF >expect_conflicts
 $commit_sha3
 $commit_sha4
 EOF

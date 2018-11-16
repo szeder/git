@@ -70,7 +70,7 @@ notes_merge_files_gone () {
 	test_must_be_empty output
 }
 
-cat <<EOF | sort >expect_notes_x
+sort <<EOF >expect_notes_x
 $(test_oid hash04a) $commit_sha4
 $(test_oid hash03a) $commit_sha3
 $(test_oid hash02a) $commit_sha2
@@ -100,7 +100,7 @@ test_expect_success 'setup merge base (x)' '
 	verify_notes x
 '
 
-cat <<EOF | sort >expect_notes_y
+sort <<EOF >expect_notes_y
 $(test_oid hash04b) $commit_sha4
 $(test_oid hash03b) $commit_sha3
 $(test_oid hash01b) $commit_sha1
@@ -132,7 +132,7 @@ test_expect_success 'setup local branch (y)' '
 	verify_notes y
 '
 
-cat <<EOF | sort >expect_notes_z
+sort <<EOF >expect_notes_z
 $(test_oid hash04c) $commit_sha4
 $(test_oid hash02c) $commit_sha2
 $(test_oid hash01c) $commit_sha1
@@ -174,7 +174,7 @@ test_expect_success 'setup remote branch (z)' '
 # 4th    | 6e8e3fe | e2bfd06 | cff59c7  | changed   / changed (diff)
 # 5th    | [none]  | [none]  | [none]   | [none]
 
-cat <<EOF | sort >expect_conflicts
+sort <<EOF >expect_conflicts
 $commit_sha1
 $commit_sha2
 $commit_sha3
@@ -230,7 +230,7 @@ test_expect_success 'merge z into m (== y) with default ("manual") resolver => C
 	test "$(git rev-parse refs/notes/m)" = "$(cat pre_merge_y)"
 '
 
-cat <<EOF | sort >expect_notes_z
+sort <<EOF >expect_notes_z
 $(test_oid hash04d) $commit_sha4
 $(test_oid hash02c) $commit_sha2
 $(test_oid hash01c) $commit_sha1
@@ -268,7 +268,7 @@ test_expect_success 'cannot do merge w/conflicts when previous merge is unfinish
 
 # Setup non-conflicting merge between x and new notes ref w
 
-cat <<EOF | sort >expect_notes_w
+sort <<EOF >expect_notes_w
 $(test_oid hash02a) $commit_sha2
 $(test_oid hash01e) $commit_sha1
 EOF
@@ -295,7 +295,7 @@ test_expect_success 'setup unrelated notes ref (w)' '
 	verify_notes w
 '
 
-cat <<EOF | sort >expect_notes_w
+sort <<EOF >expect_notes_w
 $(test_oid hash04a) $commit_sha4
 $(test_oid hash03a) $commit_sha3
 $(test_oid hash02a) $commit_sha2
@@ -328,7 +328,7 @@ test_expect_success 'can do merge without conflicts even if previous merge is un
 	verify_notes y
 '
 
-cat <<EOF | sort >expect_notes_m
+sort <<EOF >expect_notes_m
 $(test_oid hash04f) $commit_sha4
 $(test_oid hash03b) $commit_sha3
 $(test_oid hash02c) $commit_sha2
@@ -463,7 +463,7 @@ test_expect_success 'redo merge of z into m (== y) with default ("manual") resol
 	test "$(git rev-parse refs/notes/m)" = "$(cat pre_merge_y)"
 '
 
-cat <<EOF | sort >expect_notes_m
+sort <<EOF >expect_notes_m
 $(test_oid hash05g) $commit_sha5
 $(test_oid hash02c) $commit_sha2
 $(test_oid hash01f) $commit_sha1

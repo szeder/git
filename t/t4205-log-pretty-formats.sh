@@ -241,7 +241,7 @@ test_expect_success 'left alignment formatting with no padding' '
 
 test_expect_success 'left alignment formatting with no padding. i18n.logOutputEncoding' '
 	git -c i18n.logOutputEncoding=$test_encoding log --pretty="tformat:%<(1)%s" >actual &&
-	cat <<-EOF | iconv -f utf-8 -t $test_encoding >expected &&
+	iconv -f utf-8 -t $test_encoding <<-EOF >expected &&
 	message two
 	message one
 	add bar
@@ -408,7 +408,7 @@ test_expect_success 'right alignment formatting with no padding and with --graph
 
 test_expect_success 'right alignment formatting with no padding. i18n.logOutputEncoding' '
 	git -c i18n.logOutputEncoding=$test_encoding log --pretty="tformat:%>(1)%s" >actual &&
-	cat <<-EOF | iconv -f utf-8 -t $test_encoding >expected &&
+	iconv -f utf-8 -t $test_encoding <<-EOF >expected &&
 	message two
 	message one
 	add bar
@@ -487,7 +487,7 @@ test_expect_success 'center alignment formatting with no padding' '
 old_head1=$(git rev-parse --verify HEAD~0)
 test_expect_success 'center alignment formatting with no padding. i18n.logOutputEncoding' '
 	git -c i18n.logOutputEncoding=$test_encoding log --pretty="tformat:%><(1)%s" >actual &&
-	cat <<-EOF | iconv -f utf-8 -t $test_encoding >expected &&
+	iconv -f utf-8 -t $test_encoding <<-EOF >expected &&
 	message two
 	message one
 	add bar
@@ -509,7 +509,7 @@ test_expect_success 'left/right alignment formatting with stealing' '
 '
 test_expect_success 'left/right alignment formatting with stealing. i18n.logOutputEncoding' '
 	git -c i18n.logOutputEncoding=$test_encoding log --pretty="tformat:%<(10,trunc)%s%>>(10,ltrunc)% an" >actual &&
-	cat <<-\EOF | iconv -f utf-8 -t $test_encoding >expected &&
+	iconv -f utf-8 -t $test_encoding <<-\EOF >expected &&
 	short long  long long
 	message ..   A U Thor
 	add bar      A U Thor

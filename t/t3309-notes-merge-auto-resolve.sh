@@ -127,7 +127,7 @@ test_expect_success 'setup merge base (x)' '
 	git notes add -m "x notes on 15th commit" 15th
 '
 
-cat <<EOF | sort >expect_notes_x
+sort <<EOF >expect_notes_x
 $(test_oid hash15a) $commit_sha15
 $(test_oid hash14a) $commit_sha14
 $(test_oid hash13a) $commit_sha13
@@ -200,7 +200,7 @@ test_expect_success 'setup local branch (y)' '
 	git notes add -f -m "y notes on 15th commit" 15th
 '
 
-cat <<EOF | sort >expect_notes_y
+sort <<EOF >expect_notes_y
 $(test_oid hash15b) $commit_sha15
 $(test_oid hash14b) $commit_sha14
 $(test_oid hash13b) $commit_sha13
@@ -273,7 +273,7 @@ test_expect_success 'setup remote branch (z)' '
 	git notes add -f -m "z notes on 15th commit" 15th
 '
 
-cat <<EOF | sort >expect_notes_z
+sort <<EOF >expect_notes_z
 $(test_oid hash15c) $commit_sha15
 $(test_oid hash14b) $commit_sha14
 $(test_oid hash13a) $commit_sha13
@@ -365,7 +365,7 @@ test_expect_success 'merge z into y with invalid configuration option => Fail/No
 	verify_notes y y
 '
 
-cat <<EOF | sort >expect_notes_ours
+sort <<EOF >expect_notes_ours
 $(test_oid hash15b) $commit_sha15
 $(test_oid hash14b) $commit_sha14
 $(test_oid hash13b) $commit_sha13
@@ -454,7 +454,7 @@ test_expect_success 'reset to pre-merge state (y)' '
 	verify_notes y y
 '
 
-cat <<EOF | sort >expect_notes_theirs
+sort <<EOF >expect_notes_theirs
 $(test_oid hash15c) $commit_sha15
 $(test_oid hash14b) $commit_sha14
 $(test_oid hash13b) $commit_sha13
@@ -532,7 +532,7 @@ test_expect_success 'reset to pre-merge state (y)' '
 	verify_notes y y
 '
 
-cat <<EOF | sort >expect_notes_union
+sort <<EOF >expect_notes_union
 $(test_oid hash15d) $commit_sha15
 $(test_oid hash14b) $commit_sha14
 $(test_oid hash13b) $commit_sha13
@@ -633,7 +633,7 @@ test_expect_success 'merge z into y with "manual" per-ref only checks specific r
 	verify_notes y y
 '
 
-cat <<EOF | sort >expect_notes_union2
+sort <<EOF >expect_notes_union2
 $(test_oid hash15e) $commit_sha15
 $(test_oid hash14b) $commit_sha14
 $(test_oid hash13b) $commit_sha13
@@ -707,7 +707,7 @@ test_expect_success 'reset to pre-merge state (z)' '
 	verify_notes z z
 '
 
-cat <<EOF | sort >expect_notes_cat_sort_uniq
+sort <<EOF >expect_notes_cat_sort_uniq
 $(test_oid hash15f) $commit_sha15
 $(test_oid hash14b) $commit_sha14
 $(test_oid hash13b) $commit_sha13

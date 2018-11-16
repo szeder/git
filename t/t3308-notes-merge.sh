@@ -66,7 +66,7 @@ verify_notes () {
 	test_cmp "expect_log_$notes_ref" "output_log_$notes_ref"
 }
 
-cat <<EOF | sort >expect_notes_x
+sort <<EOF >expect_notes_x
 $(test_oid hash4a) $commit_sha4
 $(test_oid hash3a) $commit_sha3
 $(test_oid hash2a) $commit_sha2
@@ -152,7 +152,7 @@ test_expect_success 'merge previous notes commit (y^ => y) => No-op' '
 	test "$pre_state" = "$(git rev-parse refs/notes/y)"
 '
 
-cat <<EOF | sort >expect_notes_y
+sort <<EOF >expect_notes_y
 $(test_oid hash5b) $commit_sha5
 $(test_oid hash4b) $commit_sha4
 $(test_oid hash3b) $commit_sha3
@@ -219,7 +219,7 @@ test_expect_success 'merge empty notes ref (z => y)' '
 	test "$(git rev-parse refs/notes/x)" != "$(git rev-parse refs/notes/y)"
 '
 
-cat <<EOF | sort >expect_notes_y
+sort <<EOF >expect_notes_y
 $(test_oid hash5b) $commit_sha5
 $(test_oid hash4b) $commit_sha4
 $(test_oid hash3b) $commit_sha3
@@ -257,7 +257,7 @@ test_expect_success 'change notes on other notes ref (y)' '
 	verify_notes y
 '
 
-cat <<EOF | sort >expect_notes_x
+sort <<EOF >expect_notes_x
 $(test_oid hash5b) $commit_sha5
 $(test_oid hash4d) $commit_sha4
 $(test_oid hash1a) $commit_sha1
@@ -288,7 +288,7 @@ test_expect_success 'change notes on notes ref (x)' '
 	verify_notes x
 '
 
-cat <<EOF | sort >expect_notes_x
+sort <<EOF >expect_notes_x
 $(test_oid hash5b) $commit_sha5
 $(test_oid hash4d) $commit_sha4
 $(test_oid hash2c) $commit_sha2
@@ -322,7 +322,7 @@ test_expect_success 'merge y into x => Non-conflicting 3-way merge' '
 	verify_notes y
 '
 
-cat <<EOF | sort >expect_notes_w
+sort <<EOF >expect_notes_w
 $(test_oid hash3d) $commit_sha3
 $(test_oid hash2c) $commit_sha2
 EOF
@@ -352,7 +352,7 @@ test_expect_success 'create notes on new, separate notes ref (w)' '
 	verify_notes w
 '
 
-cat <<EOF | sort >expect_notes_x
+sort <<EOF >expect_notes_x
 $(test_oid hash5b) $commit_sha5
 $(test_oid hash4d) $commit_sha4
 $(test_oid hash3d) $commit_sha3
