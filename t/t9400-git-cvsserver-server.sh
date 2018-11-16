@@ -106,11 +106,11 @@ END VERIFICATION REQUEST
 EOF
 
 test_expect_success 'pserver authentication' \
-  'cat request-anonymous | git-cvsserver pserver >log 2>&1 &&
+  'git-cvsserver pserver <request-anonymous >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 test_expect_success 'pserver authentication failure (non-anonymous user)' \
-  'if cat request-git | git-cvsserver pserver >log 2>&1
+  'if git-cvsserver pserver <request-git >log 2>&1
    then
        false
    else
@@ -119,15 +119,15 @@ test_expect_success 'pserver authentication failure (non-anonymous user)' \
    sed -ne \$p log | grep "^I HATE YOU\$"'
 
 test_expect_success 'pserver authentication success (non-anonymous user with password)' \
-  'cat login-git-ok | git-cvsserver pserver >log 2>&1 &&
+  'git-cvsserver pserver <login-git-ok >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 test_expect_success 'pserver authentication (login)' \
-  'cat login-anonymous | git-cvsserver pserver >log 2>&1 &&
+  'git-cvsserver pserver <login-anonymous >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 test_expect_success 'pserver authentication failure (login/non-anonymous user)' \
-  'if cat login-git | git-cvsserver pserver >log 2>&1
+  'if git-cvsserver pserver <login-git >log 2>&1
    then
        false
    else
@@ -156,7 +156,7 @@ Root $WORKDIR
 EOF
 
 test_expect_success 'req_Root failure (relative pathname)' \
-  'if cat request-relative | git-cvsserver pserver >log 2>&1
+  'if git-cvsserver pserver <request-relative >log 2>&1
    then
        echo unexpected success
        false
@@ -166,25 +166,23 @@ test_expect_success 'req_Root failure (relative pathname)' \
    tail log | grep "^error 1 Root must be an absolute pathname$"'
 
 test_expect_success 'req_Root failure (conflicting roots)' \
-  'cat request-conflict | git-cvsserver pserver >log 2>&1 &&
+  'git-cvsserver pserver <request-conflict >log 2>&1 &&
    tail log | grep "^error 1 Conflicting roots specified$"'
 
 test_expect_success 'req_Root (strict paths)' \
-  'cat request-anonymous | git-cvsserver --strict-paths pserver "$SERVERDIR" >log 2>&1 &&
+  'git-cvsserver --strict-paths pserver "$SERVERDIR" <request-anonymous >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 test_expect_success 'req_Root failure (strict-paths)' '
-    ! cat request-anonymous |
-    git-cvsserver --strict-paths pserver "$WORKDIR" >log 2>&1
+    ! git-cvsserver --strict-paths pserver "$WORKDIR" <request-anonymous >log 2>&1
 '
 
 test_expect_success 'req_Root (w/o strict-paths)' \
-  'cat request-anonymous | git-cvsserver pserver "$WORKDIR/" >log 2>&1 &&
+  'git-cvsserver pserver "$WORKDIR/" <request-anonymous >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 test_expect_success 'req_Root failure (w/o strict-paths)' '
-    ! cat request-anonymous |
-    git-cvsserver pserver "$WORKDIR/gitcvs" >log 2>&1
+    ! git-cvsserver pserver "$WORKDIR/gitcvs" <request-anonymous >log 2>&1
 '
 
 cat >request-base  <<EOF
@@ -197,25 +195,24 @@ Root /gitcvs.git
 EOF
 
 test_expect_success 'req_Root (base-path)' \
-  'cat request-base | git-cvsserver --strict-paths --base-path "$WORKDIR/" pserver "$SERVERDIR" >log 2>&1 &&
+  'git-cvsserver --strict-paths --base-path "$WORKDIR/" pserver "$SERVERDIR" <request-base >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 test_expect_success 'req_Root failure (base-path)' '
-    ! cat request-anonymous |
-    git-cvsserver --strict-paths --base-path "$WORKDIR" pserver "$SERVERDIR" >log 2>&1
+    ! git-cvsserver --strict-paths --base-path "$WORKDIR" pserver "$SERVERDIR" <request-anonymous >log 2>&1
 '
 
 GIT_DIR="$SERVERDIR" git config --bool gitcvs.enabled false || exit 1
 
 test_expect_success 'req_Root (export-all)' \
-  'cat request-anonymous | git-cvsserver --export-all pserver "$WORKDIR" >log 2>&1 &&
+  'git-cvsserver --export-all pserver "$WORKDIR" <request-anonymous >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 test_expect_success 'req_Root failure (export-all w/o whitelist)' \
-  '! (cat request-anonymous | git-cvsserver --export-all pserver >log 2>&1 || false)'
+  '! (git-cvsserver --export-all pserver <request-anonymous >log 2>&1 || false)'
 
 test_expect_success 'req_Root (everything together)' \
-  'cat request-base | git-cvsserver --export-all --strict-paths --base-path "$WORKDIR/" pserver "$SERVERDIR" >log 2>&1 &&
+  'git-cvsserver --export-all --strict-paths --base-path "$WORKDIR/" pserver "$SERVERDIR" <request-base >log 2>&1 &&
    sed -ne \$p log | grep "^I LOVE YOU\$"'
 
 GIT_DIR="$SERVERDIR" git config --bool gitcvs.enabled true || exit 1
