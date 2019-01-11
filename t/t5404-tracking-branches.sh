@@ -1,7 +1,6 @@
 #!/bin/sh
 
 test_description='tracking branch update checks for git push'
-test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME
@@ -40,24 +39,29 @@ test_expect_success 'prepare pushable branches' '
 '
 
 test_expect_success 'mixed-success push returns error' '
+	cd aa &&
 	test_must_fail git push origin :
 '
 
 test_expect_success 'check tracking branches updated correctly after push' '
+	cd aa &&
 	test "$(git rev-parse origin/main)" = "$(git rev-parse main)"
 '
 
 test_expect_success 'check tracking branches not updated for failed refs' '
+	cd aa &&
 	test "$(git rev-parse origin/b1)" = "$b1" &&
 	test "$(git rev-parse origin/b2)" = "$b2"
 '
 
 test_expect_success 'deleted branches have their tracking branches removed' '
+	cd aa &&
 	git push origin :b1 &&
 	test "$(git rev-parse origin/b1)" = "origin/b1"
 '
 
 test_expect_success 'already deleted tracking branches ignored' '
+	cd aa &&
 	git branch -d -r origin/b3 &&
 	git push origin :b3 >output 2>&1 &&
 	! grep "^error: " output
