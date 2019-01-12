@@ -3,7 +3,7 @@
 test_description='test GIT_CEILING_DIRECTORIES'
 
 TEST_PASSES_SANITIZE_LEAK=true
-test_preserve_cwd=YesForNow
+test_preserve_cwd=ItIsSimplerThatWay
 . ./test-lib.sh
 
 test_prefix() {
