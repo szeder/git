@@ -3,7 +3,6 @@
 test_description='basic tests for fast-export --anonymize'
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME
-test_preserve_cwd=YesForNow
 
 . ./test-lib.sh
 
@@ -79,6 +78,7 @@ test_expect_success 'import stream to new repository' '
 '
 
 test_expect_success 'result has two branches' '
+	cd new &&
 	git for-each-ref --format="%(refname)" refs/heads >branches &&
 	test_line_count = 2 branches &&
 	other_branch=refs/heads/other &&
@@ -89,12 +89,14 @@ test_expect_success 'repo has original shape and timestamps' '
 	shape () {
 		git log --format="%m %ct" --left-right --boundary "$@"
 	} &&
-	(cd .. && shape main...other) >expect &&
+	shape main...other >new/expect &&
+	cd new &&
 	shape $main_branch...$other_branch >actual &&
 	test_cmp expect actual
 '
 
 test_expect_success 'root tree has original shape' '
+	cd new &&
 	# the output entries are not necessarily in the same
 	# order, but we should at least have the same set of
 	# object types.
@@ -106,6 +108,7 @@ test_expect_success 'root tree has original shape' '
 '
 
 test_expect_success 'paths in subdir ended up in one tree' '
+	cd new &&
 	git -C .. ls-tree other:subdir >orig-subdir &&
 	cut -d" " -f2 <orig-subdir | sort >expect &&
 	tree=$(grep tree root | cut -f2) &&
@@ -115,17 +118,20 @@ test_expect_success 'paths in subdir ended up in one tree' '
 '
 
 test_expect_success 'identical gitlinks got identical oid' '
+	cd new &&
 	awk "/commit/ { print \$3 }" <root | sort -u >commits &&
 	test_line_count = 1 commits
 '
 
 test_expect_success 'tag points to branch tip' '
+	cd new &&
 	git rev-parse $other_branch >expect &&
 	git for-each-ref --format="%(*objectname)" | grep . >actual &&
 	test_cmp expect actual
 '
 
 test_expect_success 'idents are shared' '
+	cd new &&
 	git log --all --format="%an <%ae>" >authors &&
 	sort -u authors >unique &&
 	test_line_count = 1 unique &&
