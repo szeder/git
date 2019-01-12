@@ -6,7 +6,6 @@
 test_description='test WebDAV http-push
 
 This test runs various sanity checks on http-push.'
-test_preserve_cwd=YesForNow
 
 GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME=main
 export GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME
@@ -64,22 +63,24 @@ test_expect_success 'push to remote repository with packed refs' '
 	git commit -m path2 &&
 	HEAD=$(git rev-parse --verify HEAD) &&
 	git push &&
-	(cd "$HTTPD_DOCUMENT_ROOT_PATH"/test_repo.git &&
-	 test $HEAD = $(git rev-parse --verify HEAD))
+	cd "$HTTPD_DOCUMENT_ROOT_PATH"/test_repo.git &&
+	test $HEAD = $(git rev-parse --verify HEAD)
 '
 
 test_expect_success 'push already up-to-date' '
+	cd "$ROOT_PATH"/test_repo_clone &&
 	git push
 '
 
 test_expect_success 'push to remote repository with unpacked refs' '
-	(cd "$HTTPD_DOCUMENT_ROOT_PATH"/test_repo.git &&
-	 rm packed-refs &&
-	 git update-ref refs/heads/main $ORIG_HEAD &&
-	 git --bare update-server-info) &&
+	cd "$HTTPD_DOCUMENT_ROOT_PATH"/test_repo.git &&
+	rm packed-refs &&
+	git update-ref refs/heads/main $ORIG_HEAD &&
+	git --bare update-server-info &&
+	cd "$ROOT_PATH"/test_repo_clone &&
 	git push &&
-	(cd "$HTTPD_DOCUMENT_ROOT_PATH"/test_repo.git &&
-	 test $HEAD = $(git rev-parse --verify HEAD))
+	cd "$HTTPD_DOCUMENT_ROOT_PATH"/test_repo.git &&
+	test $HEAD = $(git rev-parse --verify HEAD)
 '
 
 test_expect_success 'http-push fetches unpacked objects' '
