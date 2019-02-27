@@ -886,6 +886,37 @@ want_trace () {
 	}
 }
 
+disable_tracing () {
+	if test $trace_eval_level_ -gt 0
+	then
+		set +x
+		trace_func_level_=$(($trace_func_level_ + 1))
+	fi
+}
+
+restore_tracing_and_return_with () {
+	if test $# != 1
+	then
+		BUG "restore_tracing_and_return_with requires one argument"
+	fi
+	if test $trace_eval_level_ -gt 0
+	then
+		case "$trace_func_level_" in
+		0)
+			BUG "trace_func_level_ got messed up"
+			;;
+		1)
+			trace_func_level_=0
+			set -x
+			;;
+		*)
+			trace_func_level_=$(($trace_func_level_ - 1))
+			;;
+		esac
+	fi
+	return $1
+} 2>/dev/null 4>/dev/null
+
 # This is a separate function because some tests use
 # "return" to end a test_expect_success block early
 # (and we want to make sure we run any cleanup like
@@ -893,7 +924,15 @@ want_trace () {
 test_eval_inner_ () {
 	# Do not add anything extra (including LF) after '$*'
 	eval "
-		want_trace && trace_eval_level_=$(($trace_eval_level_+1)) && set -x
+		if want_trace
+		then
+			trace_eval_level_=\$((\$trace_eval_level_ + 1))
+			if test \$trace_eval_level_ -eq 1
+			then
+				trace_func_level_=0
+			fi
+			set -x
+		fi
 		$*"
 }
 
@@ -924,7 +963,11 @@ test_eval_ () {
 		test_eval_ret_=$?
 		if want_trace
 		then
-			test 1 = $trace_eval_level_ && set +x
+			if test $trace_eval_level_ -eq 1 ||
+			   test $trace_func_level_ -gt 0
+			then
+				set +x
+			fi
 			trace_eval_level_=$(($trace_eval_level_-1))
 		fi
 	} 2>/dev/null 4>&2
