@@ -1821,6 +1821,11 @@ _git_format_patch ()
 			" "" "${cur##--thread=}"
 		return
 		;;
+	--range-diff=*..*)
+		local arg="${cur#*=}"
+		__git_complete_refs --cur="${arg##*..}" --pfx="${arg%..*}.."
+		return
+		;;
 	--base=*|--interdiff=*|--range-diff=*)
 		__git_complete_refs --cur="${cur#--*=}"
 		return
