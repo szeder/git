@@ -106,7 +106,6 @@ then
 		echo "https://travis-ci.org/$CI_REPO_SLUG/jobs/$1"
 	}
 
-	BREW_INSTALL_PACKAGES="git-lfs gettext"
 	export GIT_PROVE_OPTS="--timer --jobs 3 --state=failed,slow,save"
 	export GIT_TEST_OPTS="--verbose-log -x --immediate"
 	MAKEFLAGS="$MAKEFLAGS --jobs=2"
