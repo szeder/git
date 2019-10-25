@@ -65,7 +65,7 @@ static struct object_directory *find_odb(struct repository *r,
 	return odb;
 }
 
-static int graph_verify(int argc, const char **argv)
+static int graph_verify(int argc, const char **argv, const char *prefix)
 {
 	struct commit_graph *graph = NULL;
 	struct object_directory *odb = NULL;
@@ -195,7 +195,7 @@ static int git_commit_graph_write_config(const char *var, const char *value,
 	return 0;
 }
 
-static int graph_write(int argc, const char **argv)
+static int graph_write(int argc, const char **argv, const char *prefix)
 {
 	struct string_list pack_indexes = STRING_LIST_INIT_NODUP;
 	struct strbuf buf = STRBUF_INIT;
@@ -311,32 +311,20 @@ cleanup:
 
 int cmd_commit_graph(int argc, const char **argv, const char *prefix)
 {
-	static struct option builtin_commit_graph_options[] = {
+	parse_opt_subcommand_fn *fn = NULL;
+	struct option builtin_commit_graph_options[] = {
 		OPT_STRING(0, "object-dir", &opts.obj_dir,
 			N_("dir"),
 			N_("the object directory to store the graph")),
+		OPT_SUBCOMMAND("verify", &fn, graph_verify),
+		OPT_SUBCOMMAND("write", &fn, graph_write),
 		OPT_END(),
 	};
 
-	if (argc == 2 && !strcmp(argv[1], "-h"))
-		usage_with_options(builtin_commit_graph_usage,
-				   builtin_commit_graph_options);
-
 	git_config(git_default_config, NULL);
-	argc = parse_options(argc, argv, prefix,
-			     builtin_commit_graph_options,
-			     builtin_commit_graph_usage,
-			     PARSE_OPT_STOP_AT_NON_OPTION);
-
 	save_commit_buffer = 0;
 
-	if (argc > 0) {
-		if (!strcmp(argv[0], "verify"))
-			return graph_verify(argc, argv);
-		if (!strcmp(argv[0], "write"))
-			return graph_write(argc, argv);
-	}
-
-	usage_with_options(builtin_commit_graph_usage,
-			   builtin_commit_graph_options);
+	argc = parse_options(argc, argv, prefix, builtin_commit_graph_options,
+		      builtin_commit_graph_usage, 0);
+	return fn(argc, argv, prefix);
 }
