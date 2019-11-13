@@ -72,4 +72,6 @@ command $switch_cmd su -m -l $CI_USER -c "
 	test -n '$cache_dir' && ln -s '$cache_dir/.prove' t/.prove
 	make
 	make test
+	cat t/CD-*
+	rm -rf t/CD-*
 "
