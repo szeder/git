@@ -2214,9 +2214,10 @@ _git_mv ()
 
 _git_notes ()
 {
-	local subcommands='add append copy edit get-ref list merge prune remove show'
-	local subcommand="$(__git_find_on_cmdline "$subcommands")"
+	local subcommands subcommand
 
+	__git_get_builtin_subcommands notes
+	subcommand="$(__git_find_on_cmdline "$subcommands")"
 	case "$subcommand,$cur" in
 	,--*)
 		__gitcomp_builtin notes
@@ -2227,7 +2228,7 @@ _git_notes ()
 			__git_complete_refs
 			;;
 		*)
-			__gitcomp "$subcommands --ref"
+			__gitcomp_builtin notes
 			;;
 		esac
 		;;
