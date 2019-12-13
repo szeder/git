@@ -405,15 +405,7 @@ else
 	unset $(compgen -v __gitcomp_builtin_)
 fi
 
-# This function is equivalent to
-#
-#    __gitcomp "$(git xxx --git-completion-helper) ..."
-#
-# except that the output is cached. Accept 1-3 arguments:
-# 1: the git command to execute, this is also the cache key
-# 2: extra options to be added on top (e.g. negative forms)
-# 3: options to be excluded
-__gitcomp_builtin ()
+__git_init_builtin_opts ()
 {
 	# spaces must be replaced with underscore for multi-word
 	# commands, e.g. "git remote add" becomes remote_add.
@@ -421,7 +413,7 @@ __gitcomp_builtin ()
 	local incl="${2-}"
 	local excl="${3-}"
 
-	local var=__gitcomp_builtin_"${cmd/-/_}"
+	local var=__gitcomp_builtin_"${cmd//-/_}"
 	local options
 	eval "options=\${$var-}"
 
@@ -441,7 +433,40 @@ __gitcomp_builtin ()
 		done
 		eval "$var=\"$options\""
 	fi
+}
 
+__git_get_builtin_subcommands ()
+{
+	local cmd="$1"
+	local var=__gitcomp_builtin_"${cmd//-/_}"
+	local options opt
+
+	__git_init_builtin_opts "$@"
+	eval "options=\$$var"
+
+	for opt in $options; do
+		if [ "${opt#--}" == $opt ]; then
+			subcommands="$subcommands $opt"
+		fi
+	done
+}
+
+# This function is equivalent to
+#
+#    __gitcomp "$(git xxx --git-completion-helper) ..."
+#
+# except that the output is cached. Accept 1-3 arguments:
+# 1: the git command to execute, this is also the cache key
+# 2: extra options to be added on top (e.g. negative forms)
+# 3: options to be excluded
+__gitcomp_builtin ()
+{
+	local cmd="$1"
+	local var=__gitcomp_builtin_"${cmd//-/_}"
+	local options
+
+	__git_init_builtin_opts "$@"
+	eval "options=\$$var"
 	__gitcomp "$options"
 }
 
