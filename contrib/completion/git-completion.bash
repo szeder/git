@@ -2376,12 +2376,13 @@ _git_rebase ()
 
 _git_reflog ()
 {
-	local subcommands="show delete expire"
-	local subcommand="$(__git_find_on_cmdline "$subcommands")"
+	local subcommands subcommand
 
+	__git_get_builtin_subcommands reflog
+	subcommand="$(__git_find_on_cmdline "$subcommands")"
 	case "$subcommand,$cur" in
 	,*)
-		__gitcomp "$subcommands"
+		__gitcomp_builtin reflog
 		;;
 	*,--*)
 		__gitcomp_builtin reflog_$subcommand
