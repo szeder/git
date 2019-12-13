@@ -619,6 +619,20 @@ test_expect_success '__git_query_parse_options - exclude' '
 	)
 '
 
+test_expect_success '__git_get_builtin_subcommands' '
+	(
+		sane_unset __gitcomp_builtin_notes &&
+		__git_get_builtin_subcommands notes &&
+		test -n "$__gitcomp_builtin_notes" &&
+		echo "$__gitcomp_builtin_notes" >actual &&
+		grep -- --ref= actual &&
+		test -n "$subcommands" &&
+		echo "$subcommands" >actual &&
+		! grep -- "--[a-z]" actual &&
+		grep " append " actual
+	)
+'
+
 test_expect_success '__git_remotes - list remotes from $GIT_DIR/remotes and from config file' '
 	cat >expect <<-EOF &&
 	remote_from_file_1

@@ -441,6 +441,22 @@ __git_query_parse_options ()
 	fi
 }
 
+__git_get_builtin_subcommands ()
+{
+	local cmd="$1"
+	local var=__gitcomp_builtin_"${cmd//-/_}"
+	local options opt
+
+	__git_query_parse_options "$@"
+	eval "options=\$$var"
+
+	for opt in $options; do
+		if [ "${opt#--}" = $opt ]; then
+			subcommands="$subcommands $opt"
+		fi
+	done
+}
+
 # Completes --options of builtin commands using parse-options.
 # It accepts 1-3 arguments:
 # 1: The name of the git command whose options should be completed.
