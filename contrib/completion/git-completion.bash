@@ -3337,16 +3337,16 @@ __git_complete_worktree_paths ()
 
 _git_worktree ()
 {
-	local subcommands="add list lock move prune remove unlock"
-	local subcommand subcommand_idx
+	local subcommands subcommand subcommand_idx
 
+	__git_get_builtin_subcommands worktree
 	subcommand="$(__git_find_on_cmdline --show-idx "$subcommands")"
 	subcommand_idx="${subcommand% *}"
 	subcommand="${subcommand#* }"
 
 	case "$subcommand,$cur" in
 	,*)
-		__gitcomp "$subcommands"
+		__gitcomp_builtin worktree
 		;;
 	*,--*)
 		__gitcomp_builtin worktree_$subcommand
