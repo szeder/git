@@ -368,18 +368,17 @@ test_commit_bulk () {
 
 	git -C "$indir" \
 	    -c fastimport.unpacklimit=0 \
-	    fast-import <"$tmpfile" || return 1
+	    fast-import <"$tmpfile" &&
 
 	# This will be left in place on failure, which may aid debugging.
-	rm -f "$tmpfile"
+	rm -f "$tmpfile" &&
 
 	# If we updated HEAD, then be nice and update the index and working
 	# tree, too.
 	if test "$ref" = "HEAD"
 	then
-		git -C "$indir" checkout -f HEAD || return 1
+		git -C "$indir" checkout -f HEAD
 	fi
-
 }
 
 # This function helps systems where core.filemode=false is set.
@@ -768,7 +767,7 @@ test_dir_is_empty () {
 	then
 		echo "Directory '$1' is not empty, it contains:"
 		ls -la "$1"
-		return 1
+		false
 	fi
 }
 
@@ -808,17 +807,21 @@ test_path_is_missing () {
 # output through when the number of lines is wrong.
 
 test_line_count () {
+	local ret=0
 	if test $# != 3
 	then
 		BUG "not 3 parameters to test_line_count"
 	fi
-	test_path_is_file "$3" &&
-	if ! test $(wc -l <"$3") "$1" "$2"
+	if ! test_path_is_file "$3"
+	then
+		ret=1
+	elif ! test $(wc -l <"$3") "$1" "$2"
 	then
 		echo "test_line_count: line count for $3 !$1 $2"
 		cat "$3"
-		return 1
+		ret=1
 	fi
+	return $ret
 }
 
 test_file_size () {
@@ -904,6 +907,7 @@ test_must_fail_acceptable () {
 #    ! grep pattern output
 
 test_must_fail () {
+	local ret
 	case "$1" in
 	ok=*)
 		_test_ok=${1#ok=}
@@ -922,24 +926,26 @@ test_must_fail () {
 	if test $exit_code -eq 0 && ! list_contains "$_test_ok" success
 	then
 		echo >&4 "test_must_fail: command succeeded: $*"
-		return 1
+		ret=1
 	elif test_match_signal 13 $exit_code && list_contains "$_test_ok" sigpipe
 	then
-		return 0
+		ret=0
 	elif test $exit_code -gt 129 && test $exit_code -le 192
 	then
 		echo >&4 "test_must_fail: died by signal $(($exit_code - 128)): $*"
-		return 1
+		ret=1
 	elif test $exit_code -eq 127
 	then
 		echo >&4 "test_must_fail: command not found: $*"
-		return 1
+		ret=1
 	elif test $exit_code -eq 126
 	then
 		echo >&4 "test_must_fail: valgrind error: $*"
-		return 1
+		ret=1
+	else
+		ret=0
 	fi
-	return 0
+	return $ret
 } 6>&2 2>&4
 
 # Similar to test_must_fail, but tolerates success, too.  This is
@@ -971,13 +977,11 @@ test_expect_code () {
 	shift
 	"$@" 2>&6
 	exit_code=$?
-	if test $exit_code = $want_code
+	if test $exit_code != $want_code
 	then
-		return 0
+		echo >&4 "test_expect_code: command exited with $exit_code, we wanted $want_code $*"
+		false
 	fi
-
-	echo >&4 "test_expect_code: command exited with $exit_code, we wanted $want_code $*"
-	return 1
 } 6>&2 2>&4
 
 # test_cmp is a helper function to compare actual and expected output.
@@ -1032,6 +1036,7 @@ test_cmp_bin () {
 # GIT_TEST_GETTEXT_POISON=false. Only here as a shim for other
 # in-flight changes. Should not be used and will be removed soon.
 test_i18ngrep () {
+	local ret=0
 	eval "last_arg=\${$#}"
 
 	test -f "$last_arg" ||
@@ -1046,32 +1051,38 @@ test_i18ngrep () {
 	if test "x!" = "x$1"
 	then
 		shift
-		! grep "$@" && return 0
-
-		echo >&4 "error: '! grep $@' did find a match in:"
+		if grep "$@"
+		then
+			echo >&4 "error: '! grep $@' did find a match in:"
+			cat >&4 "$last_arg"
+			ret=1
+		fi
 	else
-		grep "$@" && return 0
-
-		echo >&4 "error: 'grep $@' didn't find a match in:"
+		if ! grep "$@"
+		then
+			echo >&4 "error: 'grep $@' didn't find a match in:"
+			if test -s "$last_arg"
+			then
+				cat >&4 "$last_arg"
+			else
+				echo >&4 "<File '$last_arg' is empty>"
+			fi
+			ret=1
+		fi
 	fi
 
-	if test -s "$last_arg"
-	then
-		cat >&4 "$last_arg"
-	else
-		echo >&4 "<File '$last_arg' is empty>"
-	fi
-
-	return 1
+	return $ret
 }
 
 # Call any command "$@" but be more verbose about its
 # failure. This is handy for commands like "test" which do
 # not output anything when they fail.
 verbose () {
-	"$@" && return 0
-	echo >&4 "command failed: $(git rev-parse --sq-quote "$@")"
-	return 1
+	if ! "$@"
+	then
+		echo >&4 "command failed: $(git rev-parse --sq-quote "$@")"
+		false
+	fi
 }
 
 # Check if the file expected to be empty is indeed empty, and barfs
@@ -1079,20 +1090,24 @@ verbose () {
 
 test_must_be_empty () {
 	test "$#" -ne 1 && BUG "1 param"
-	test_path_is_file "$1" &&
-	if test -s "$1"
+	local ret=0
+	if ! test_path_is_file "$1"
+	then
+		ret=1
+	elif test -s "$1"
 	then
 		echo "'$1' is not empty, it contains:"
 		cat "$1"
-		return 1
+		ret=1
 	fi
+	return $ret
 }
 
 # Tests that its two parameters refer to the same revision, or if '!' is
 # provided first, that its other two parameters refer to different
 # revisions.
 test_cmp_rev () {
-	local op='=' wrong_result=different
+	local ret=0 op='=' wrong_result=different r1 r2
 
 	if test $# -ge 1 && test "x$1" = 'x!'
 	then
@@ -1103,11 +1118,11 @@ test_cmp_rev () {
 	if test $# != 2
 	then
 		BUG "test_cmp_rev requires two revisions, but got $#"
-	else
-		local r1 r2
-		r1=$(git rev-parse --verify "$1") &&
-		r2=$(git rev-parse --verify "$2") || return 1
+	fi
 
+	if r1=$(git rev-parse --verify "$1") &&
+	   r2=$(git rev-parse --verify "$2")
+	then
 		if ! test "$r1" "$op" "$r2"
 		then
 			cat >&4 <<-EOF
@@ -1115,24 +1130,30 @@ test_cmp_rev () {
 			  '$1': $r1
 			  '$2': $r2
 			EOF
-			return 1
+			ret=1
 		fi
+	else
+		ret=1
 	fi
+	return $ret
 }
 
 # Compare paths respecting core.ignoreCase
 test_cmp_fspath () {
+	local ret
 	if test "x$1" = "x$2"
 	then
-		return 0
-	fi
-
-	if test true != "$(git config --get --type=bool core.ignorecase)"
+		ret=0
+	elif test true != "$(git config --get --type=bool core.ignorecase)"
 	then
-		return 1
+		ret=1
+	elif test "x$(echo "$1" | tr A-Z a-z)" = "x$(echo "$2" | tr A-Z a-z)"
+	then
+		ret=0
+	else
+		ret=1
 	fi
-
-	test "x$(echo "$1" | tr A-Z a-z)" =  "x$(echo "$2" | tr A-Z a-z)"
+	return $ret
 }
 
 # Print a sequence of integers in increasing order, either with
@@ -1392,16 +1413,17 @@ test_env () {
 # Returns true if the numeric exit code in "$2" represents the expected signal
 # in "$1". Signals should be given numerically.
 test_match_signal () {
+	local ret=1
 	if test "$2" = "$((128 + $1))"
 	then
 		# POSIX
-		return 0
+		ret=0
 	elif test "$2" = "$((256 + $1))"
 	then
 		# ksh
-		return 0
+		ret=0
 	fi
-	return 1
+	return $ret
 }
 
 # Read up to "$1" bytes (or to EOF) from stdin and write them to stdout.
@@ -1421,16 +1443,20 @@ test_copy_bytes () {
 
 # run "$@" inside a non-git directory
 nongit () {
-	test -d non-repo ||
-	mkdir non-repo ||
-	return 1
-
-	(
-		GIT_CEILING_DIRECTORIES=$(pwd) &&
-		export GIT_CEILING_DIRECTORIES &&
-		cd non-repo &&
-		"$@" 2>&6
-	)
+	local ret=0
+	if test -d non-repo || mkdir non-repo
+	then
+		(
+			GIT_CEILING_DIRECTORIES=$(pwd) &&
+			export GIT_CEILING_DIRECTORIES &&
+			cd non-repo &&
+			"$@" 2>&6
+		)
+		ret=$?
+	else
+		ret=1
+	fi
+	return $ret
 } 6>&2 2>&4
 
 # convert function arguments or stdin (if not arguments given) to pktline
@@ -1610,8 +1636,12 @@ test_path_is_hidden () {
 	BUG "test_path_is_hidden can only be used on Windows"
 
 	# Use the output of `attrib`, ignore the absolute path
-	case "$("$SYSTEMROOT"/system32/attrib "$1")" in *H*?:*) return 0;; esac
-	return 1
+	local ret=1
+	case "$("$SYSTEMROOT"/system32/attrib "$1")" in
+	*H*?:*)
+		ret=0 ;;
+	esac
+	return $ret
 }
 
 # Check that the given command was invoked as part of the
