@@ -6,12 +6,6 @@ cache:
 
 matrix:
   include:
-    - env: jobname=linux-clang
-      os: linux
-      compiler: clang
-    - env: jobname=linux-gcc
-      os: linux
-      compiler: gcc
     - env: jobname=s390x
       arch: s390x
       os: linux
