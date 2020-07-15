@@ -1266,7 +1266,9 @@ test_when_finished () {
 	test "${BASH_SUBSHELL-0}" = 0 ||
 	BUG "test_when_finished does nothing in a subshell"
 	test_cleanup="{ $*
-		} && (exit \"\$eval_ret\"); eval_ret=\$?; $test_cleanup"
+		} && (exit \"\$eval_ret\") 2>/dev/null 4>&2
+		{ eval_ret=\$? ; } 2>/dev/null 4>&2
+		$test_cleanup"
 	restore_tracing_and_return_with $?
 }
 
@@ -1296,7 +1298,9 @@ test_atexit () {
 	test "${BASH_SUBSHELL-0}" = 0 ||
 	BUG "test_atexit does nothing in a subshell"
 	test_atexit_cleanup="{ $*
-		} && (exit \"\$eval_ret\"); eval_ret=\$?; $test_atexit_cleanup"
+		} && (exit \"\$eval_ret\") 2>/dev/null 4>&2
+		{ eval_ret=\$? ; } 2>/dev/null 4>&2
+		$test_atexit_cleanup"
 	restore_tracing_and_return_with $?
 }
 

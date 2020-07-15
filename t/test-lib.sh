@@ -980,7 +980,7 @@ test_eval_ () {
 }
 
 test_run_ () {
-	test_cleanup=:
+	test_cleanup="{ : ; } 2>/dev/null 4>&2"
 	expecting_failure=$2
 
 	if test "${GIT_TEST_CHAIN_LINT:-1}" != 0; then
@@ -1138,7 +1138,7 @@ finalize_junit_xml () {
 	fi
 }
 
-test_atexit_cleanup=:
+test_atexit_cleanup="{ : ; } 2>/dev/null 4>&2"
 test_atexit_handler () {
 	# In a succeeding test script 'test_atexit_handler' is invoked
 	# twice: first from 'test_done', then from 'die' in the trap on
