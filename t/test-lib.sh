@@ -1348,16 +1348,21 @@ HOME="$TRASH_DIRECTORY"
 GNUPGHOME="$HOME/gnupg-home-not-used"
 export HOME GNUPGHOME
 
-if test -z "$TEST_NO_CREATE_REPO"
-then
-	test_create_repo "$TRASH_DIRECTORY"
-else
-	mkdir -p "$TRASH_DIRECTORY"
-fi
-
+mkdir -p "$TRASH_DIRECTORY" &&
 # Use -P to resolve symlinks in our working directory so that the cwd
 # in subprocesses like git equals our $PWD (for pathname comparisons).
-cd -P "$TRASH_DIRECTORY" || exit 1
+cd -P "$TRASH_DIRECTORY" ||
+error "cannot setup test environment"
+
+if test -z "$TEST_NO_CREATE_REPO"
+then
+	"${GIT_TEST_INSTALLED:-$GIT_EXEC_PATH}/git$X" -c \
+		init.defaultBranch="${GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME-master}" \
+		init >&3 2>&4 ||
+	error "cannot run git init -- have you built things yet?"
+	mv .git/hooks .git/hooks-disabled ||
+	error "cannot setup test environment"
+fi
 
 this_test=${0##*/}
 this_test=${this_test%%-*}
