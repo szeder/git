@@ -933,7 +933,8 @@ want_trace () {
 }
 
 disable_tracing () {
-	if test $trace_eval_level_ -gt 0
+	if test $trace_eval_level_ -gt 0 &&
+	   test -z "$GIT_TEST_TRACE_HELPERS"
 	then
 		set +x
 		trace_func_level_=$(($trace_func_level_ + 1))
@@ -945,7 +946,8 @@ restore_tracing_and_return_with () {
 	then
 		BUG "restore_tracing_and_return_with requires one argument"
 	fi
-	if test $trace_eval_level_ -gt 0
+	if test $trace_eval_level_ -gt 0 &&
+	   test -z "$GIT_TEST_TRACE_HELPERS"
 	then
 		case "$trace_func_level_" in
 		0)
@@ -1532,6 +1534,7 @@ EMPTY_BLOB=$(test_oid empty_blob)
 # tempted to turn it into an infinite loop. cf. 6129c930 ("test-lib:
 # limit the output of the yes utility", 2016-02-02)
 yes () {
+	{ disable_tracing ; } 2>/dev/null 4>&2
 	if test $# = 0
 	then
 		y=y
@@ -1545,6 +1548,7 @@ yes () {
 		echo "$y"
 		i=$(($i+1))
 	done
+	restore_tracing_and_return_with $?
 }
 
 # The GIT_TEST_FAIL_PREREQS code hooks into test_set_prereq(), and
