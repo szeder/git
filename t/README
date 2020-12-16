@@ -89,6 +89,8 @@ appropriately before running "make". Short options can be bundled, i.e.
 	Ignored in test scripts that set the variable 'test_untraceable'
 	to a non-empty value, unless it's run with a Bash version
 	supporting BASH_XTRACEFD, i.e. v4.1 or later.
+	Trace from within test helper functions is only shown if
+	GIT_TEST_TRACE_HELPERS is set to a non-empty value.
 
 -d::
 --debug::
