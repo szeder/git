@@ -733,18 +733,20 @@ test_external_without_stderr () {
 # The commands test the existence or non-existence of $1
 test_path_is_file () {
 	test "$#" -ne 1 && BUG "1 param"
+	test_path_exists "$1" &&
 	if ! test -f "$1"
 	then
-		echo "File $1 doesn't exist"
+		echo "Path $1 is not a file. $2"
 		false
 	fi
 }
 
 test_path_is_dir () {
 	test "$#" -ne 1 && BUG "1 param"
+	test_path_exists "$1" &&
 	if ! test -d "$1"
 	then
-		echo "Directory $1 doesn't exist"
+		echo "Path $1 is not a directory. $2"
 		false
 	fi
 }
