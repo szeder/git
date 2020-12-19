@@ -1224,8 +1224,7 @@ test_create_repo () {
 	test "$#" = 1 ||
 	BUG "not 1 parameter to test-create-repo"
 	repo="$1" &&
-	"${GIT_TEST_INSTALLED:-$GIT_EXEC_PATH}/git$X" -c \
-		init.defaultBranch="${GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME-master}" \
+	git -c init.defaultBranch="${GIT_TEST_DEFAULT_INITIAL_BRANCH_NAME-master}" \
 		init "$repo" >&3 2>&4 &&
 	mv "$repo"/.git/hooks "$repo"/.git/hooks-disabled
 }
