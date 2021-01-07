@@ -510,4 +510,32 @@ test_expect_success 'do not refresh null base index' '
 	)
 '
 
+test_expect_success 'alternate index and split index' '
+	test_create_repo no-split-alternate-location &&
+	(
+		cd no-split-alternate-location &&
+		>file1 &&
+		>file2 &&
+		>file3 &&
+
+		git update-index --split-index --add file1 &&
+		ls .git/sharedindex.* >expect &&
+
+		GIT_INDEX_FILE=.git/otherindex \
+		git update-index --split-index --add file2 &&
+		ls .git/sharedindex.* >actual &&
+		test_cmp expect actual &&
+
+		GIT_INDEX_FILE=.git/otherindex2 \
+		git -c splitIndex.sharedIndexExpire=now \
+			update-index --split-index --add file2 &&
+		ls .git/sharedindex.* >actual &&
+		test_cmp expect actual &&
+
+		git ls-files --cached >actual &&
+		echo file1 >expect &&
+		test_cmp expect actual
+	)
+'
+
 test_done

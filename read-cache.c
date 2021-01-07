@@ -3228,6 +3228,20 @@ static int too_many_not_shared_entries(struct index_state *istate)
 	return (int64_t)istate->cache_nr * max_split < (int64_t)not_shared * 100;
 }
 
+static int is_gitdir_index_lock(struct lock_file *lock)
+{
+	char *lock_path = real_pathdup(get_lock_file_path(lock), 0);
+	char *index_lock_path = real_pathdup(git_path("index.lock"), 0);
+	int ret;
+
+	ret = !strcmp(lock_path, index_lock_path);
+
+	free(lock_path);
+	free(index_lock_path);
+
+	return ret;
+}
+
 int write_locked_index(struct index_state *istate, struct lock_file *lock,
 		       unsigned flags)
 {
@@ -3246,7 +3260,7 @@ int write_locked_index(struct index_state *istate, struct lock_file *lock,
 	if (istate->fsmonitor_last_update)
 		fill_fsmonitor_bitmap(istate);
 
-	if (!si || alternate_index_output ||
+	if (!si || !is_gitdir_index_lock(lock) || alternate_index_output ||
 	    (istate->cache_changed & ~EXTMASK)) {
 		if (si)
 			oidclr(&si->base_oid);
