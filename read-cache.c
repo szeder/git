@@ -2332,7 +2332,15 @@ int read_index_from(struct index_state *istate, const char *path,
 	base_path = xstrfmt("%s/sharedindex.%s", gitdir, base_oid_hex);
 	trace2_region_enter_printf("index", "shared/do_read_index",
 				   the_repository, "%s", base_path);
-	ret = do_read_index(split_index->base, base_path, 1);
+	ret = do_read_index(split_index->base, base_path, 0);
+	if (!ret) {
+		char *path_copy = xstrdup(path);
+		free(base_path);
+		base_path = xstrfmt("%s/sharedindex.%s", dirname(path_copy),
+				    base_oid_hex);
+		free(path_copy);
+		ret = do_read_index(split_index->base, base_path, 1);
+	}
 	trace2_region_leave_printf("index", "shared/do_read_index",
 				   the_repository, "%s", base_path);
 	if (!oideq(&split_index->base_oid, &split_index->base->oid))

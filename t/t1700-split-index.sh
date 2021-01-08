@@ -519,4 +519,26 @@ test_expect_success 'alternate index and split index' '
 	)
 '
 
+test_expect_success 'reading split index at alternate location' '
+	test_create_repo reading-alternate-location &&
+	(
+		cd reading-alternate-location &&
+		>file-in-alternate &&
+		git update-index --split-index --add file-in-alternate
+	) &&
+
+	# Should be able to find the shared index both next to the
+	# split index ...
+	GIT_INDEX_FILE=./reading-alternate-location/.git/index \
+	git ls-files --cached >actual &&
+	echo file-in-alternate >expect &&
+	test_cmp expect actual &&
+
+	# ... and in the current GIT_DIR as well.
+	mv -v ./reading-alternate-location/.git/sharedindex.* .git &&
+	GIT_INDEX_FILE=./reading-alternate-location/.git/index \
+	git ls-files --cached >actual &&
+	test_cmp expect actual
+'
+
 test_done
