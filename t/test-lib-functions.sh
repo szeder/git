@@ -1042,10 +1042,10 @@ test_must_fail () {
 	esac
 	if ! test_must_fail_acceptable "$@"
 	then
-		echo >&7 "test_must_fail: only 'git' is allowed: $*"
+		echo >&6 "test_must_fail: only 'git' is allowed: $*"
 		return 1
 	fi
-	"$@" 2>&7
+	"$@" 2>&6
 	exit_code=$?
 	if test $exit_code -eq 0 && ! list_contains "$_test_ok" success
 	then
@@ -1068,7 +1068,7 @@ test_must_fail () {
 		return 1
 	fi
 	return 0
-} 7>&2 2>&4
+} 6>&2 2>&4
 
 # Similar to test_must_fail, but tolerates success, too.  This is
 # meant to be used in contexts like:
@@ -1084,8 +1084,8 @@ test_must_fail () {
 # Accepts the same options as test_must_fail.
 
 test_might_fail () {
-	test_must_fail ok=success "$@" 2>&7
-} 7>&2 2>&4
+	test_must_fail ok=success "$@" 2>&6
+} 6>&2 2>&4
 
 # Similar to test_must_fail and test_might_fail, but check that a
 # given command exited with a given exit code. Meant to be used as:
@@ -1097,7 +1097,7 @@ test_might_fail () {
 test_expect_code () {
 	want_code=$1
 	shift
-	"$@" 2>&7
+	"$@" 2>&6
 	exit_code=$?
 	if test $exit_code = $want_code
 	then
@@ -1106,7 +1106,7 @@ test_expect_code () {
 
 	echo >&4 "test_expect_code: command exited with $exit_code, we wanted $want_code $*"
 	return 1
-} 7>&2 2>&4
+} 6>&2 2>&4
 
 # test_cmp is a helper function to compare actual and expected output.
 # You can use it like:
@@ -1377,8 +1377,8 @@ test_write_lines () {
 }
 
 perl () {
-	command "$PERL_PATH" "$@" 2>&7
-} 7>&2 2>&4
+	command "$PERL_PATH" "$@" 2>&6
+} 6>&2 2>&4
 
 # Given the name of an environment variable with a bool value, normalize
 # its value to a 0 (true) or 1 (false or empty string) return code.
@@ -1504,13 +1504,13 @@ test_env () {
 				shift
 				;;
 			*)
-				"$@" 2>&7
+				"$@" 2>&6
 				exit
 				;;
 			esac
 		done
 	)
-} 7>&2 2>&4
+} 6>&2 2>&4
 
 # Returns true if the numeric exit code in "$2" represents the expected signal
 # in "$1". Signals should be given numerically.
@@ -1552,9 +1552,9 @@ nongit () {
 		GIT_CEILING_DIRECTORIES=$(pwd) &&
 		export GIT_CEILING_DIRECTORIES &&
 		cd non-repo &&
-		"$@" 2>&7
+		"$@" 2>&6
 	)
-} 7>&2 2>&4
+} 6>&2 2>&4
 
 # These functions are historical wrappers around "test-tool pkt-line"
 # for older tests. Use "test-tool pkt-line" itself in new tests.
