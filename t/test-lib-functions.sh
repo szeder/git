@@ -911,8 +911,7 @@ test_must_fail () {
 	esac
 	if ! test_must_fail_acceptable "$@"
 	then
-		echo >&6 "test_must_fail: only 'git' is allowed: $*"
-		return 1
+		BUG "test_must_fail: only 'git' is allowed: $*"
 	fi
 	"$@" 2>&6
 	exit_code=$?
