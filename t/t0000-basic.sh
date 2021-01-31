@@ -1315,12 +1315,12 @@ test_expect_success 'test_must_fail on a failing git command with env' '
 '
 
 test_expect_success 'test_must_fail rejects a non-git command' '
-	! test_must_fail grep ^$ notafile 2>err &&
+	! ( test_must_fail grep ^$ notafile ) 7>err &&
 	grep -F "test_must_fail: only '"'"'git'"'"' is allowed" err
 '
 
 test_expect_success 'test_must_fail rejects a non-git command with env' '
-	! test_must_fail env var1=a var2=b grep ^$ notafile 2>err &&
+	! ( test_must_fail env var1=a var2=b grep ^$ notafile ) 7>err &&
 	grep -F "test_must_fail: only '"'"'git'"'"' is allowed" err
 '
 
