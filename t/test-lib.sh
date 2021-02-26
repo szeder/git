@@ -1502,6 +1502,12 @@ then
 	export GIT_TEST_CHECK_CACHE_TREE
 fi
 
+if test -z "$GIT_TEST_CHECK_PROGRESS"
+then
+	GIT_TEST_CHECK_PROGRESS=true
+	export GIT_TEST_CHECK_PROGRESS
+fi
+
 test_lazy_prereq PIPE '
 	# test whether the filesystem supports FIFOs
 	test_have_prereq !MINGW,!CYGWIN &&
