@@ -48,6 +48,8 @@ struct progress {
 static volatile sig_atomic_t progress_update;
 
 static int test_check_progress;
+/* Used to catch nested/overlapping progresses with GIT_TEST_CHECK_PROGRESS. */
+static struct progress *current_progress = NULL;
 
 /*
  * These are only intended for testing the progress output, i.e. exclusively
@@ -258,8 +260,12 @@ static struct progress *start_progress_delay(const char *title, uint64_t total,
 	struct progress *progress;
 
 	test_check_progress = git_env_bool("GIT_TEST_CHECK_PROGRESS", 0);
+	if (test_check_progress && current_progress)
+		BUG("progress \"%s\" is still active when starting new progress \"%s\"",
+		    current_progress->title, title);
 
 	progress = xmalloc(sizeof(*progress));
+	current_progress = progress;
 	progress->title = title;
 	progress->total = total;
 	progress->last_value = -1;
@@ -383,6 +389,7 @@ void stop_progress_msg(struct progress **p_progress, const char *msg)
 	strbuf_release(&progress->counters_sb);
 	if (progress->throughput)
 		strbuf_release(&progress->throughput->display);
+	current_progress = NULL;
 	free(progress->throughput);
 	free(progress);
 }
