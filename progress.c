@@ -115,6 +115,12 @@ static void display(struct progress *progress, uint64_t n, const char *done)
 	int show_update = 0;
 	int last_count_len = counters_sb->len;
 
+	if (test_check_progress && progress->last_value != -1 &&
+	    n < progress->last_value)
+		BUG("progress \"%s\" counts backwards %"PRIuMAX" -> %"PRIuMAX,
+		    progress->title, (uintmax_t)progress->last_value,
+		    (uintmax_t)n);
+
 	progress->last_value = n;
 
 	if (progress->delay && (!progress_update || --progress->delay))

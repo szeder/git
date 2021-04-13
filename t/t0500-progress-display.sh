@@ -153,28 +153,6 @@ EOF
 	test_cmp expect out
 '
 
-# Progress counter goes backwards, this should not happen in practice.
-test_expect_success 'progress shortens - crazy caller' '
-	cat >expect <<-\EOF &&
-	Working hard:  10% (100/1000)<CR>
-	Working hard:  20% (200/1000)<CR>
-	Working hard:   0% (1/1000)  <CR>
-	Working hard: 100% (1000/1000)<CR>
-	Working hard: 100% (1000/1000), done.
-	EOF
-
-	cat >in <<-\EOF &&
-	progress 100
-	progress 200
-	progress 1
-	progress 1000
-	EOF
-	test-tool progress --total=1000 "Working hard" <in 2>stderr &&
-
-	show_cr <stderr >out &&
-	test_cmp expect out
-'
-
 test_expect_success 'progress display with throughput' '
 	cat >expect <<-\EOF &&
 	Working hard: 10<CR>
@@ -324,13 +302,26 @@ test_expect_success 'GIT_TEST_CHECK_PROGRESS catches non-matching total' '
 	grep "BUG:.*total progress does not match" stderr
 '
 
+test_expect_success 'GIT_TEST_CHECK_PROGRESS catches backwards counting' '
+	cat >in <<-\EOF &&
+	progress 2
+	progress 1
+	EOF
+
+	test_must_fail env GIT_TEST_CHECK_PROGRESS=1 \
+		test-tool progress --total=3 "Working hard" <in 2>stderr &&
+	grep "BUG:.*counts backwards" stderr
+'
+
 test_expect_success 'tolerate bogus progress without GIT_TEST_CHECK_PROGRESS' '
 	cat >expect <<-\EOF &&
+	Working hard:  66% (2/3)<CR>
 	Working hard:  33% (1/3)<CR>
 	Working hard:  33% (1/3), done.
 	EOF
 
 	cat >in <<-\EOF &&
+	progress 2
 	progress 1
 	EOF
 	(
