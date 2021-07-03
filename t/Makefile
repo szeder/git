@@ -117,13 +117,7 @@ show-missed-prereqs:
 	@missed_prereqs="$$(sort test-results/*.missing_prereqs 2>/dev/null | uniq)"; \
 	if test -n "$$missed_prereqs"; then \
 		echo "Missed prereqs:"; \
-		: Missed prereqs are much more readable when listed in    ; \
-		: columns, but the column command might not be available. ; \
-		if type column >/dev/null 2>&1; then \
-			echo "$$missed_prereqs" | column; \
-		else \
-			echo $$missed_prereqs; \
-		fi; \
+		echo "$$missed_prereqs" |../git column --mode=always --indent="  "; \
 	fi
 
 gitweb-test:
