@@ -3067,14 +3067,15 @@ __gitcomp_directories ()
 
 _git_sparse_checkout ()
 {
-	local subcommands="list init set disable add reapply"
-	local subcommand="$(__git_find_on_cmdline "$subcommands")"
-	if [ -z "$subcommand" ]; then
-		__gitcomp "$subcommands"
-		return
-	fi
+	local subcommands subcommand
+
+	__git_get_builtin_subcommands sparse-checkout
+	subcommand="$(__git_find_on_cmdline "$subcommands")"
 
 	case "$subcommand,$cur" in
+	,*)
+		__gitcomp_builtin sparse-checkout
+		;;
 	*,--*)
 		__gitcomp_builtin sparse-checkout_$subcommand "" "--"
 		;;
