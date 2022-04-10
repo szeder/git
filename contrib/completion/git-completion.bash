@@ -410,18 +410,17 @@ else
 	unset $(compgen -v __gitcomp_builtin_)
 fi
 
-# This function is equivalent to
-#
-#    __gitcomp "$(git xxx --git-completion-helper) ..."
-#
-# except that the output is cached. Accept 1-3 arguments:
-# 1: the git command to execute, this is also the cache key
-# 2: extra options to be added on top (e.g. negative forms)
-# 3: options to be excluded
+# Completes --options of builtin commands using parse-options.
+# It accepts 1-3 arguments:
+# 1: The name of the git command whose options should be completed.
+#    Subcommands are supported, in that case an underscore character
+#    should separate the command and subcommand, e.g. to complete
+#    options for 'git remote add' it should be called with
+#    "remote_add".
+# 2: Extra options to be added on top (e.g. --no-foo variants) (optional).
+# 3: Options to be excluded (optional).
 __gitcomp_builtin ()
 {
-	# spaces must be replaced with underscore for multi-word
-	# commands, e.g. "git remote add" becomes remote_add.
 	local cmd="$1"
 	local incl="${2-}"
 	local excl="${3-}"
