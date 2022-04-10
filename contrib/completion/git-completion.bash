@@ -410,16 +410,10 @@ else
 	unset $(compgen -v __gitcomp_builtin_)
 fi
 
-# Completes --options of builtin commands using parse-options.
-# It accepts 1-3 arguments:
-# 1: The name of the git command whose options should be completed.
-#    Subcommands are supported, in that case an underscore character
-#    should separate the command and subcommand, e.g. to complete
-#    options for 'git remote add' it should be called with
-#    "remote_add".
-# 2: Extra options to be added on top (e.g. --no-foo variants) (optional).
-# 3: Options to be excluded (optional).
-__gitcomp_builtin ()
+# Gets a list of --options from builtin commands using parse-options
+# and stores them in the corresponding $__gitcomp_builtin_cmd variable.
+# Accepts the same 1-3 arguments as __gitcomp_builtin() below.
+__git_query_parse_options ()
 {
 	local cmd="$1"
 	local incl="${2-}"
@@ -445,7 +439,25 @@ __gitcomp_builtin ()
 		done
 		eval "$var=\"$options\""
 	fi
+}
 
+# Completes --options of builtin commands using parse-options.
+# It accepts 1-3 arguments:
+# 1: The name of the git command whose options should be completed.
+#    Subcommands are supported, in that case an underscore character
+#    should separate the command and subcommand, e.g. to complete
+#    options for 'git remote add' it should be called with
+#    "remote_add".
+# 2: Extra options to be added on top (e.g. --no-foo variants) (optional).
+# 3: Options to be excluded (optional).
+__gitcomp_builtin ()
+{
+	local cmd="$1"
+	local var=__gitcomp_builtin_"${cmd//-/_}"
+	local options
+
+	__git_query_parse_options "$@"
+	eval "options=\$$var"
 	__gitcomp "$options"
 }
 

@@ -589,6 +589,36 @@ test_expect_success '__gitcomp_nl - doesnt fail because of invalid variable name
 	__gitcomp_nl "$invalid_variable_name"
 '
 
+test_expect_success '__git_query_parse_options' '
+	(
+		sane_unset __gitcomp_builtin_checkout &&
+		__git_query_parse_options checkout &&
+		test -n "$__gitcomp_builtin_checkout" &&
+		echo "$__gitcomp_builtin_checkout" >actual &&
+		grep -- --detach actual
+	)
+'
+
+test_expect_success '__git_query_parse_options - include' '
+	(
+		sane_unset __gitcomp_builtin_checkout &&
+		__git_query_parse_options checkout "--extra-opt" &&
+		test -n "$__gitcomp_builtin_checkout" &&
+		echo "$__gitcomp_builtin_checkout" >actual &&
+		grep -- --extra-opt actual
+	)
+'
+
+test_expect_success '__git_query_parse_options - exclude' '
+	(
+		sane_unset __gitcomp_builtin_checkout &&
+		__git_query_parse_options checkout "" "--detach" &&
+		test -n "$__gitcomp_builtin_checkout" &&
+		echo "$__gitcomp_builtin_checkout" >actual &&
+		! grep -- --detach actual
+	)
+'
+
 test_expect_success '__git_remotes - list remotes from $GIT_DIR/remotes and from config file' '
 	cat >expect <<-EOF &&
 	remote_from_file_1
