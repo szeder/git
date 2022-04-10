@@ -2354,11 +2354,17 @@ _git_reflog ()
 	local subcommands="show delete expire"
 	local subcommand="$(__git_find_on_cmdline "$subcommands")"
 
-	if [ -z "$subcommand" ]; then
+	case "$subcommand,$cur" in
+	,*)
 		__gitcomp "$subcommands"
-	else
+		;;
+	*,--*)
+		__gitcomp_builtin reflog_$subcommand
+		;;
+	*,*)
 		__git_complete_refs
-	fi
+		;;
+	esac
 }
 
 __git_send_email_confirm_options="always never auto cc compose"
