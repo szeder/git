@@ -437,13 +437,24 @@ __gitcomp_builtin ()
 		else
 			completion_helper="--git-completion-helper"
 		fi
-		# leading and trailing spaces are significant to make
-		# option removal work correctly.
-		options=" $incl $(__git ${cmd/_/ } $completion_helper) " || return
+		# Some git commands attempt to read from stdin before fully
+		# validating their arguments, and, consequently, they might
+		# hang instead of erroring out when invoked with the
+		# (unsupported) '--git-completion-helper' option (and/or
+		# without a mandatory subcommand), hence the redirected stdin.
+		options=$(__git ${cmd/_/ } $completion_helper </dev/null)
+		if [ -z "$options" ]; then
+			# Prevent futile re-query.
+			options=" "
+		else
+			# leading and trailing spaces are significant to make
+			# option removal work correctly.
+			options=" $incl $options "
+			for i in $excl; do
+				options="${options/ $i / }"
+			done
+		fi
 
-		for i in $excl; do
-			options="${options/ $i / }"
-		done
 		eval "$var=\"$options\""
 	fi
 
@@ -3370,13 +3381,12 @@ __git_complete_common () {
 	esac
 }
 
-__git_cmds_with_parseopt_helper=
-__git_support_parseopt_helper () {
-	test -n "$__git_cmds_with_parseopt_helper" ||
-		__git_cmds_with_parseopt_helper="$(__git --list-cmds=parseopt)"
-
-	case " $__git_cmds_with_parseopt_helper " in
-	*" $1 "*)
+__git_builtin_commands=
+__git_is_builtin_command () {
+	test -n "$__git_builtin_commands" ||
+		__git_builtin_commands="$(__git --list-cmds=builtins)"
+	case $'\n'$__git_builtin_commands$'\n' in
+	*$'\n'$1$'\n'*)
 		return 0
 		;;
 	*)
@@ -3401,7 +3411,7 @@ __git_complete_command () {
 	then
 		$completion_func
 		return 0
-	elif __git_support_parseopt_helper "$command"
+	elif __git_is_builtin_command "$command"
 	then
 		__git_complete_common "$command"
 		return 0
