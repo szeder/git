@@ -26,8 +26,7 @@ then
 	exit 1
 fi
 
-make check-headers ||
-exit 1
+make check-headers
 
 make check-pot
 
