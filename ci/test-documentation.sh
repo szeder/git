@@ -46,6 +46,9 @@ check_docs . Asciidoctor
 rm -f stdout.log stderr.log stderr.raw
 check_unignored_build_artifacts
 
+make clean
+check_uncleaned_build_artifacts
+
 # Build docs with Meson and AsciiDoc
 meson setup build-asciidoc -Ddocs=html,man -Ddocs_backend=asciidoc
 meson compile -C build-asciidoc

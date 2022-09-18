@@ -73,4 +73,15 @@ case "$jobname" in
 esac
 
 check_unignored_build_artifacts
+
+case "$jobname" in
+*-meson)
+	# TODO
+	;;
+*)
+	make clean
+	check_uncleaned_build_artifacts
+	;;
+esac
+
 save_good_tree
