@@ -54,6 +54,7 @@ group () {
 	rm exit.status
 
 	end_group "$group"
+	set -x
 	return $res
 }
 
