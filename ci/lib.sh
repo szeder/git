@@ -176,6 +176,20 @@ check_unignored_build_artifacts () {
 	}
 }
 
+check_uncleaned_build_artifacts () {
+	if ! is_usable_git_repository .
+	then
+		return
+	fi
+
+	if git ls-files --ignored --other --exclude-standard --error-unmatch \
+		-- ':/*' 2>/dev/null
+	then
+		echo "$(tput setaf 1)error: found un-cleaned build artifacts$(tput sgr0)"
+		return 1
+	fi
+}
+
 handle_failed_tests () {
 	return 1
 }

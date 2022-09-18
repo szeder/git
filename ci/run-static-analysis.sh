@@ -34,4 +34,7 @@ ${0%/*}/check-unsafe-assertions.sh
 
 check_unignored_build_artifacts
 
+make clean
+check_uncleaned_build_artifacts
+
 save_good_tree

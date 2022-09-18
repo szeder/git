@@ -76,6 +76,16 @@ begin_group 'Post-build checks'
 
 check_unignored_build_artifacts
 
+case "$jobname" in
+*-meson)
+	# TODO
+	;;
+*)
+	make clean
+	check_uncleaned_build_artifacts
+	;;
+esac
+
 end_group 'Post-build checks'
 
 save_good_tree
