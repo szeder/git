@@ -81,6 +81,8 @@ case "$jobname" in
 	# TODO
 	;;
 *)
+	check_install_did_not_build_anything make install
+
 	make clean
 	check_uncleaned_build_artifacts
 	;;

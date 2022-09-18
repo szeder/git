@@ -46,6 +46,8 @@ check_docs . Asciidoctor
 rm -f stdout.log stderr.log stderr.raw
 check_unignored_build_artifacts
 
+check_install_did_not_build_anything make USE_ASCIIDOCTOR=1 install-doc
+
 make clean
 check_uncleaned_build_artifacts
 
