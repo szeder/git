@@ -32,4 +32,6 @@ make check-pot
 
 ${0%/*}/check-unsafe-assertions.sh
 
+check_unignored_build_artifacts
+
 save_good_tree
