@@ -177,6 +177,21 @@ check_unignored_build_artifacts () {
 	}
 }
 
+check_install_did_not_build_anything () {
+	local stamp=/tmp/before-install-stamp changelist=/tmp/changed-files
+
+	>"$stamp"
+	"$@"
+
+	find . -newer "$stamp" \! -name .git >"$changelist"
+	if test -s "$changelist"
+	then
+		cat "$changelist"
+		echo "$(tput setaf 1)error: '$@' created/modified some files$(tput sgr0)"
+		return 1
+	fi
+}
+
 check_uncleaned_build_artifacts () {
 	if git ls-files --ignored --other --exclude-standard --error-unmatch \
 		-- ':/*' 2>/dev/null
@@ -377,7 +392,7 @@ osx-meson)
 	;;
 esac
 
-MAKEFLAGS="$MAKEFLAGS CC=${CC:-cc}"
+MAKEFLAGS="$MAKEFLAGS CC=${CC:-cc} prefix=/tmp/git-install"
 
 end_group "CI setup via $(basename $0)"
 set -x
