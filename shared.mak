@@ -127,3 +127,19 @@ GIT_USER_AGENT="$(GIT_USER_AGENT)" \
 GIT_VERSION="$(GIT_VERSION_OVERRIDE)" \
 $(SHELL_PATH) "$(1)/GIT-VERSION-GEN" "$(1)" "$(2)" "$(3)"
 endef
+
+# If data read from stdin differs from the content of the target, then
+# overwrite the target with that data.
+# If invoked with a parameter, then print that parameter to stderr when
+# overwriting the target.
+define replace_if_different
+{ \
+	new="$$(cat)" && \
+	if test x"$$new" != x"$$(cat "$@" 2>/dev/null)" ; then \
+		if test -n "$(1)"; then \
+			echo >&2 "    $(1)"; \
+		fi && \
+		printf '%s\n' "$$new" >"$@" ; \
+	fi ; \
+}
+endef

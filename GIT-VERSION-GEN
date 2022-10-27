@@ -96,11 +96,9 @@ if test -z "$OUTPUT"
 then
 	printf "%s\n" "$REPLACED"
 else
-	printf "%s\n" "$REPLACED" >"$OUTPUT".$$+
-	if ! test -f "$OUTPUT" || ! cmp "$OUTPUT".$$+ "$OUTPUT" >/dev/null
+	ORIG=$(cat $OUTPUT 2>/dev/null)
+	if test x"$ORIG" != x"$REPLACED"
 	then
-		mv "$OUTPUT".$$+ "$OUTPUT"
-	else
-		rm "$OUTPUT".$$+
+		printf "%s\n" "$REPLACED" >"$OUTPUT"
 	fi
 fi

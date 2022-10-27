@@ -104,8 +104,7 @@ $(MAK_DIR_GITWEB)GITWEB-BUILD-OPTIONS: FORCE
 	     -e 's|@GITWEB_SITE_HEADER@|$(GITWEB_SITE_HEADER)|' \
 	     -e 's|@GITWEB_SITE_FOOTER@|$(GITWEB_SITE_FOOTER)|' \
 	     -e 's|@HIGHLIGHT_BIN@|$(HIGHLIGHT_BIN)|' \
-	     $(MAK_DIR_GITWEB)GITWEB-BUILD-OPTIONS.in >"$@+"
-	@cmp -s $@+ $@ && rm -f $@+ || mv -f $@+ $@
+	     $(MAK_DIR_GITWEB)GITWEB-BUILD-OPTIONS.in | $(replace_if_different)
 
 $(MAK_DIR_GITWEB)gitweb.cgi: $(MAK_DIR_GITWEB)generate-gitweb-cgi.sh
 $(MAK_DIR_GITWEB)gitweb.cgi: $(MAK_DIR_GITWEB)GITWEB-BUILD-OPTIONS

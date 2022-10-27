@@ -219,10 +219,10 @@ XMLTO_EXTRA += --skip-validation
 XMLTO_EXTRA += -x manpage.xsl
 
 asciidoctor-extensions.rb: asciidoctor-extensions.rb.in FORCE
-	$(QUIET_GEN)$(call version_gen,"$(shell pwd)/..",$<,$@)
+	@$(call version_gen,"$(shell pwd)/..",$<) | $(call replace_if_different,* new $@)
 else
 asciidoc.conf: asciidoc.conf.in FORCE
-	$(QUIET_GEN)$(call version_gen,"$(shell pwd)/..",$<,$@)
+	@$(call version_gen,"$(shell pwd)/..",$<) | $(call replace_if_different,* new $@)
 endif
 
 ifdef WITH_BREAKING_CHANGES
@@ -331,11 +331,7 @@ mergetools-merge.adoc:
 TRACK_ASCIIDOCFLAGS = $(subst ','\'',$(ASCIIDOC_COMMON):$(ASCIIDOC_HTML):$(ASCIIDOC_DOCBOOK))
 
 GIT-ASCIIDOCFLAGS: FORCE
-	@FLAGS='$(TRACK_ASCIIDOCFLAGS)'; \
-	    if test x"$$FLAGS" != x"`cat GIT-ASCIIDOCFLAGS 2>/dev/null`" ; then \
-		echo >&2 "    * new asciidoc flags"; \
-		echo "$$FLAGS" >GIT-ASCIIDOCFLAGS; \
-            fi
+	@echo '$(TRACK_ASCIIDOCFLAGS)' | $(call replace_if_different,* new asciidoc flags)
 
 clean:
 	$(RM) -rf .build/

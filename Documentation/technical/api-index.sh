@@ -9,7 +9,7 @@ fi
 SOURCE_DIR="$1"
 OUTPUT="$2"
 
-(
+CONTENT=$(
 	cd "$SOURCE_DIR"
 
 	c=////////////////////////////////////////////////////////////////
@@ -29,11 +29,10 @@ OUTPUT="$2"
 	done
 	echo "$c"
 	sed -n -e '/^\/\/ table of contents end/,$p' "$skel"
-) >"$OUTPUT"+
+)
 
-if test -f "$OUTPUT" && cmp "$OUTPUT" "$OUTPUT"+ >/dev/null
+ORIG=$(cat $OUTPUT 2>/dev/null)
+if test x"$ORIG" != x"$CONTENT"
 then
-	rm -f "$OUTPUT"+
-else
-	mv "$OUTPUT"+ "$OUTPUT"
+	printf "%s\n" "$CONTENT" >"$OUTPUT"
 fi
