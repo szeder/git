@@ -170,9 +170,8 @@ GIT-GUI-BUILD-OPTIONS: FORCE
 		-e 's|@SHELL_PATH@|$(SHELL_PATH_SQ)|' \
 		-e 's|@TCLTK_PATH@|$(TCLTK_PATH_SQ)|' \
 		-e 's|@TCL_PATH@|$(TCL_PATH_SQ)|' \
-		$@.in >$@+
-	@if grep -q '^[A-Z][A-Z_]*=@.*@$$' $@+; then echo "Unsubstituted build options in $@" >&2 && exit 1; fi
-	@if cmp $@+ $@ >/dev/null 2>&1; then $(RM) $@+; else mv $@+ $@; fi
+		$@.in | $(replace_if_different)
+	@if grep -q '^[A-Z][A-Z_]*=@.*@$$' $@; then echo "Unsubstituted build options in $@" >&2 && exit 1; fi
 
 git-gui--askpass: git-gui--askpass.sh GIT-GUI-BUILD-OPTIONS generate-script.sh
 	$(QUIET_GEN)$(SHELL_PATH) generate-script.sh $@ $< ./GIT-GUI-BUILD-OPTIONS
@@ -227,3 +226,19 @@ endif
 
 .PHONY: all install uninstall dist-version clean
 .PHONY: FORCE
+
+# If data read from stdin differs from the content of the target, then
+# overwrite the target with that data.
+# If invoked with a parameter, then print that parameter to stderr when
+# overwriting the target.
+define replace_if_different
+{ \
+	new="$$(cat)" && \
+	if test x"$$new" != x"$$(cat "$@" 2>/dev/null)" ; then \
+		if test -n "$(1)"; then \
+			echo >&2 "    $(1)"; \
+		fi && \
+		printf '%s\n' "$$new" >"$@" ; \
+	fi ; \
+}
+endef

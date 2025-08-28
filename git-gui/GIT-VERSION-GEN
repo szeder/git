@@ -89,6 +89,11 @@ else
 	VC=unset
 fi
 test "$VN" = "$VC" || {
-	echo >&2 "GITGUI_VERSION=$VN"
-	echo "GITGUI_VERSION=$VN" >"$OUTPUT"
+	CONTENT="GITGUI_VERSION=$VN"
+	echo >&2 "$CONTENT"
+	ORIG=$(cat $OUTPUT 2>/dev/null)
+	if test x"$ORIG" != x"$CONTENT"
+	then
+		printf "%s\n" "$CONTENT" >"$OUTPUT"
+	fi
 }
