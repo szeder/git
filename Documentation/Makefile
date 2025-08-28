@@ -294,7 +294,7 @@ mergetools_txt = mergetools-diff.adoc mergetools-merge.adoc
 docdep_prereqs = \
 	$(mergetools_txt) \
 	cmd-list.made $(cmds_txt)
-docdep_excludes = SubmittingPatches.adoc howto-index.adoc
+#docdep_excludes = SubmittingPatches.adoc howto-index.adoc
 
 doc.dep : $(docdep_prereqs) $(filter-out $(docdep_excludes),$(DOC_DEP_TXT)) build-docdep.perl
 	$(QUIET_GEN)$(PERL_PATH) ./build-docdep.perl "$(shell pwd)" >$@ $(QUIET_STDERR)

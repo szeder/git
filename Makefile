@@ -2406,7 +2406,7 @@ GIT_USER_AGENT_SQ = $(subst ','\'',$(GIT_USER_AGENT))
 GIT_USER_AGENT_CQ = "$(subst ",\",$(subst \,\\,$(GIT_USER_AGENT)))"
 GIT_USER_AGENT_CQ_SQ = $(subst ','\'',$(GIT_USER_AGENT_CQ))
 GIT-USER-AGENT: FORCE
-	@echo '$(GIT_USER_AGENT_SQ)' | $(replace_if_different)
+	@echo '$(GIT_USER_AGENT_SQ)' >$@
 
 ifdef DEFAULT_HELP_FORMAT
 BASIC_CFLAGS += -DDEFAULT_HELP_FORMAT='"$(DEFAULT_HELP_FORMAT)"'
