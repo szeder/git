@@ -72,5 +72,10 @@ case "$jobname" in
 	;;
 esac
 
+begin_group 'Post-build checks'
+
 check_unignored_build_artifacts
+
+end_group 'Post-build checks'
+
 save_good_tree
