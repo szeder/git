@@ -1,5 +1,4 @@
 #include "test-tool.h"
-#include "git-compat-util.h"
 #include "hashmap.h"
 #include "strbuf.h"
 #include "string-list.h"
