@@ -2,7 +2,6 @@
 #define USE_THE_REPOSITORY_VARIABLE
 
 #include "builtin.h"
-#include "git-compat-util.h"
 #include "config.h"
 #include "parse-options.h"
 #include "repository.h"

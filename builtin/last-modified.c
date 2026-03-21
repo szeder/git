@@ -1,6 +1,5 @@
-#include "git-compat-util.h"
-#include "bloom.h"
 #include "builtin.h"
+#include "bloom.h"
 #include "commit-graph.h"
 #include "commit-slab.h"
 #include "commit.h"
