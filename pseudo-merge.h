@@ -1,7 +1,6 @@
 #ifndef PSEUDO_MERGE_H
 #define PSEUDO_MERGE_H
 
-#include "git-compat-util.h"
 #include "strmap.h"
 #include "khash.h"
 #include "ewah/ewok.h"
