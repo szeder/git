@@ -37,7 +37,6 @@
  *
  */
 #include "test-tool.h"
-#include <utime.h>
 
 static const char usage_str[] =
 	"(-v|--verbose|-g|--get) (+|=|=+|=-|-)<seconds> <file>...";
