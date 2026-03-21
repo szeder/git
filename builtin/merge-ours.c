@@ -8,7 +8,6 @@
  * Pretend we resolved the heads, but declare our tree trumps everybody else.
  */
 
-#include "git-compat-util.h"
 #include "builtin.h"
 #include "config.h"
 #include "environment.h"

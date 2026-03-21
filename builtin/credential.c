@@ -1,8 +1,7 @@
 #define USE_THE_REPOSITORY_VARIABLE
 
-#include "git-compat-util.h"
-#include "credential.h"
 #include "builtin.h"
+#include "credential.h"
 #include "environment.h"
 #include "config.h"
 
