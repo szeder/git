@@ -1,5 +1,4 @@
 #include "test-tool.h"
-#include "git-compat-util.h"
 
 /*
  * Read stdin and print a hexdump to stdout.
