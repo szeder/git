@@ -1,4 +1,3 @@
-#include "git-compat-util.h"
 #include "test-tool.h"
 #include "pkt-line.h"
 #include "sideband.h"

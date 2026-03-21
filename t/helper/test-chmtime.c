@@ -37,7 +37,6 @@
  *
  */
 #include "test-tool.h"
-#include "git-compat-util.h"
 #include <utime.h>
 
 static const char usage_str[] =

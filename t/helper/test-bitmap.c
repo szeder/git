@@ -1,7 +1,6 @@
 #define USE_THE_REPOSITORY_VARIABLE
 
 #include "test-tool.h"
-#include "git-compat-util.h"
 #include "hex.h"
 #include "odb.h"
 #include "pack-bitmap.h"

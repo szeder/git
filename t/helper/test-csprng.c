@@ -1,5 +1,4 @@
 #include "test-tool.h"
-#include "git-compat-util.h"
 
 int cmd__csprng(int argc, const char **argv)
 {

@@ -1,7 +1,6 @@
 #define DISABLE_SIGN_COMPARE_WARNINGS
 
 #include "test-tool.h"
-#include "git-compat-util.h"
 
 int cmd__genzeros(int argc, const char **argv)
 {

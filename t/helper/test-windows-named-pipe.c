@@ -1,5 +1,4 @@
 #include "test-tool.h"
-#include "git-compat-util.h"
 #include "strbuf.h"
 
 #ifdef GIT_WINDOWS_NATIVE
