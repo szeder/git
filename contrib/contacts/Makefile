@@ -65,7 +65,6 @@ $(GIT_CONTACTS_HTML): $(GIT_CONTACTS_TXT)
 		-agit_version=$(GIT_VERSION) $^
 
 clean:
-	$(RM) $(GIT_CONTACTS)
 	$(RM) *.xml *.html *.1
 
 .PHONY: FORCE
