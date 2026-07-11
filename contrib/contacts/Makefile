@@ -13,7 +13,9 @@ htmldir ?= $(prefix)/share/doc/git-doc
 ../../GIT-VERSION-FILE: FORCE
 	$(MAKE) -C ../../ GIT-VERSION-FILE
 
+ifneq ($(MAKECMDGOALS),clean)
 -include ../../GIT-VERSION-FILE
+endif
 
 # this should be set to a 'standard' bsd-type install program
 INSTALL  ?= install
