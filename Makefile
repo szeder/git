@@ -3885,6 +3885,7 @@ clean: profile-clean coverage-clean cocciclean
 	$(RM) contrib/libgit-sys/partial_symbol_export.o
 	$(RM) contrib/libgit-sys/hidden_symbol_export.o
 	$(RM) contrib/libgit-sys/libgitpub.a
+	$(MAKE) -C contrib/ clean
 ifndef NO_PERL
 	$(RM) -r perl/build/
 endif
