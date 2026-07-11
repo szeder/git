@@ -22,4 +22,4 @@ $(T):
 	@echo "*** $@ ***"; '$(SHELL_PATH_SQ)' $@ $(GIT_TEST_OPTS)
 
 clean:
-	$(RM) -r 'trash directory'.*
+	$(RM) -r 'trash directory'.* test-results

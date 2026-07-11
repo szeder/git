@@ -19,6 +19,7 @@ test: all
 	$(MAKE) -C t
 
 clean:
-	$(RM) diff-highlight
+	$(RM) diff-highlight shebang.perl
+	$(MAKE) -C t clean
 
-.PHONY: FORCE
+.PHONY: FORCE all test clean
