@@ -98,9 +98,10 @@ test: $(GIT_SUBTREE_TEST)
 	$(MAKE) -C t/ test
 
 clean:
-	$(RM) $(GIT_SUBTREE)
+	$(RM) $(GIT_SUBTREE) $(GIT_SUBTREE_TEST)
 	$(RM) asciidoc.conf asciidoctor-extensions.rb
 	$(RM) *.xml *.html *.1
+	$(MAKE) -C t/ clean
 
 asciidoc.conf: ../../Documentation/asciidoc.conf.in ../../GIT-VERSION-FILE
 	$(QUIET_GEN)$(call version_gen,"$(shell pwd)/../..",$<,$@)
