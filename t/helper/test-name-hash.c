@@ -4,7 +4,6 @@
  */
 
 #include "test-tool.h"
-#include "git-compat-util.h"
 #include "pack-objects.h"
 #include "strbuf.h"
 

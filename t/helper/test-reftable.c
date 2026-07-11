@@ -1,4 +1,4 @@
-#include "git-compat-util.h"
+#include "test-tool.h"
 #include "hash.h"
 #include "hex.h"
 #include "reftable/system.h"
@@ -7,7 +7,6 @@
 #include "reftable/reftable-merged.h"
 #include "reftable/reftable-stack.h"
 #include "reftable/reftable-table.h"
-#include "test-tool.h"
 
 static void print_help(void)
 {
