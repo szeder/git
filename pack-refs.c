@@ -1,4 +1,4 @@
-#include "builtin.h"
+#include "git-compat-util.h"
 #include "config.h"
 #include "environment.h"
 #include "pack-refs.h"
