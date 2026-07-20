@@ -59,7 +59,7 @@ case "$jobname" in
 		-Dfuzzers=true \
 		-Dtest_output_directory="${TEST_OUTPUT_DIRECTORY:-$(pwd)/t}" \
 		$MESONFLAGS
-	group "Build" meson compile -C build --
+	group "Build" meson compile -C build --verbose --
 	group "Run tests" meson test -C build --print-errorlogs --test-args="$GIT_TEST_OPTS" || (
 		./t/aggregate-results.sh "${TEST_OUTPUT_DIRECTORY:-t}/test-results"
 		handle_failed_tests
