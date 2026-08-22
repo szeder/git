@@ -3997,6 +3997,10 @@ check-docs::
 check-builtins::
 	./tools/check-builtins.sh
 
+.PHONY: check-precompiled-header-users
+check-precompiled-header-users::
+	./tools/check-precompiled-header-users.sh
+
 ### Test suite coverage testing
 #
 .PHONY: coverage coverage-clean coverage-compile coverage-test coverage-report

@@ -69,6 +69,7 @@ case "$jobname" in
 	group Build make
 	group "Run tests" make test ||
 	handle_failed_tests
+	group "Check precompiled header users" make check-precompiled-header-users
 	;;
 esac
 

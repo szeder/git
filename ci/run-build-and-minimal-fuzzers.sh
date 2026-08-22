@@ -5,13 +5,14 @@
 
 . ${0%/*}/lib.sh
 
-group "Build fuzzers" make \
-	NO_CURL=NoThanks \
-	CC=clang \
-	FUZZ_CXX=clang++ \
-	CFLAGS="-fsanitize=fuzzer-no-link,address" \
-	LIB_FUZZING_ENGINE="-fsanitize=fuzzer,address" \
-	fuzz-all
+MAKEFLAGS="$MAKEFLAGS /
+	NO_CURL=NoThanks /
+	CC=clang /
+	FUZZ_CXX=clang++ /
+	CFLAGS=-fsanitize=fuzzer-no-link,address /
+	LIB_FUZZING_ENGINE=-fsanitize=fuzzer,address"
+
+group "Build fuzzers" make fuzz-all
 
 fuzzers="
 commit-graph
@@ -30,3 +31,5 @@ for fuzzer in $fuzzers; do
 	./oss-fuzz/fuzz-$fuzzer -verbosity=0 -runs=1 || exit 1
 	end_group "fuzz-$fuzzer"
 done
+
+group "Check precompiled header users" make check-precompiled-header-users
